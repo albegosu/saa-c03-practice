@@ -3822,6 +3822,357 @@
      "net-nat",
      "dr-cost"
     ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A company has 3 VPCs in one Region that need full connectivity between each other. No more VPCs are planned. Traffic between them is several TB per month.",
+     "Which option is MOST cost-effective?"
+    ],
+    "o": [
+     "VPC peering connections between each pair of VPCs.",
+     "Site-to-Site VPN between the VPCs.",
+     "AWS PrivateLink for every service.",
+     "AWS Transit Gateway with the three VPCs attached."
+    ],
+    "a": [
+     0
+    ],
+    "k": "few VPCs, full mesh, heavy traffic → VPC peering (no hourly or processing charge)",
+    "x": [
+     "Peering has no hourly charge and no data-processing charge; you pay only standard data transfer. Three VPCs need only three peerings.",
+     "VPN adds hourly charges and lower throughput.",
+     "PrivateLink exposes individual services, not full connectivity, and charges per endpoint and per GB.",
+     "Transit Gateway charges per attachment per hour plus per GB processed, which adds up with several TB per month."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html"
+    ],
+    "nt": [
+     "net-vpc"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A company runs 40 VPCs across several accounts. Each VPC has its own interface endpoints for the same 8 AWS services in 3 Availability Zones, and the endpoint hours are a large part of the network bill.",
+     "Which solution reduces this cost?"
+    ],
+    "o": [
+     "Replace the interface endpoints with NAT gateways.",
+     "Centralize the interface endpoints in a shared services VPC connected through Transit Gateway, with Route 53 private hosted zones shared to the spoke VPCs.",
+     "Create gateway endpoints for all 8 services.",
+     "Remove the endpoints and use public endpoints over the internet gateway."
+    ],
+    "a": [
+     1
+    ],
+    "k": "same interface endpoints in many VPCs → centralize them in a shared VPC",
+    "x": [
+     "NAT gateways have their own hourly and per-GB charges and send traffic over public endpoints.",
+     "One set of endpoints serves all VPCs, removing 39 copies of the hourly charges. Private hosted zones make the service names resolve to the shared endpoints.",
+     "Gateway endpoints exist only for S3 and DynamoDB.",
+     "Requires internet access from every VPC and breaks private-access requirements."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/whitepapers/latest/building-scalable-secure-multi-vpc-network-infrastructure/centralized-access-to-vpc-private-endpoints.html"
+    ],
+    "nt": [
+     "net-endpoints"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A company has 12 Application Load Balancers, each serving one low-traffic internal microservice under a different host name.",
+     "Which change reduces cost with the LEAST operational effort?"
+    ],
+    "o": [
+     "Replace each ALB with a Network Load Balancer.",
+     "Put each service on a public IP address.",
+     "Consolidate the services behind one ALB using host-based routing rules and one target group per service.",
+     "Use Route 53 weighted records instead of load balancers."
+    ],
+    "a": [
+     2
+    ],
+    "k": "many low-traffic ALBs → one ALB with host/path rules",
+    "x": [
+     "NLBs also have an hourly charge each; the count, not the type, is the problem.",
+     "Removes load balancing and exposes the services.",
+     "Each ALB has an hourly charge. One ALB with listener rules routes by host header to separate target groups and removes 11 hourly charges.",
+     "DNS does not health-check targets at the instance level or terminate TLS the way an ALB does."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-listeners.html"
+    ],
+    "nt": [
+     "cmp-elb"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "An audit shows dozens of public IPv4 addresses in an account: Elastic IPs that are not associated with anything, and public IPs on instances that only make outbound calls through a NAT gateway.",
+     "Which TWO actions reduce cost? (Select TWO.)"
+    ],
+    "o": [
+     "Replace the NAT gateway with an internet gateway for every instance.",
+     "Disable auto-assign public IPv4 on private subnets and launch those instances without public IPs.",
+     "Release the unassociated Elastic IP addresses.",
+     "Convert the Elastic IPs to Bring Your Own IP.",
+     "Move the instances to a larger instance type."
+    ],
+    "a": [
+     1,
+     2
+    ],
+    "k": "AWS charges for every public IPv4 address (in use or idle) → release idle EIPs, avoid needless public IPs",
+    "x": [
+     "Gives every instance a public IP, adding charges and exposure.",
+     "Every public IPv4 address is billed hourly. Instances that only use the NAT gateway do not need one.",
+     "Idle Elastic IPs are billed per hour; releasing them stops the charge.",
+     "BYOIP needs your own address block and does not fit this case.",
+     "Has nothing to do with IP charges."
+    ],
+    "r": [
+     "https://aws.amazon.com/vpc/pricing/"
+    ],
+    "nt": [
+     "net-nat"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A company sends 200 TB per month from AWS to its on-premises data center over the internet. It already has a 10 Gbps AWS Direct Connect connection that carries little traffic.",
+     "Which change reduces data transfer cost?"
+    ],
+    "o": [
+     "Use a Site-to-Site VPN over the internet.",
+     "Use S3 Transfer Acceleration.",
+     "Route the transfer over the Direct Connect connection.",
+     "Compress the data and keep using the internet."
+    ],
+    "a": [
+     2
+    ],
+    "k": "large egress to on premises + existing DX → send it over DX (lower DTO rate)",
+    "x": [
+     "VPN traffic over the internet is billed as internet data transfer out, plus VPN hours.",
+     "Transfer Acceleration speeds uploads to S3 and adds a charge.",
+     "Data transferred out over Direct Connect is billed at a lower per-GB rate than internet data transfer out.",
+     "Helps a little, but still pays internet egress rates."
+    ],
+    "r": [
+     "https://aws.amazon.com/directconnect/pricing/"
+    ],
+    "nt": [
+     "net-hybrid"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "An application in us-east-1 uses an Amazon RDS database and EC2 instances that communicate through the instances' public IP addresses in the same Availability Zone.",
+     "How can the company reduce data transfer charges?"
+    ],
+    "o": [
+     "Use the private IP addresses or private DNS names for the traffic.",
+     "Put the instances in a placement group.",
+     "Use Elastic IP addresses instead.",
+     "Enable enhanced networking."
+    ],
+    "a": [
+     0
+    ],
+    "k": "same-AZ traffic: private IP is free, public/Elastic IP is billed",
+    "x": [
+     "Traffic within an AZ over private IPs is free. Using public or Elastic IPs is billed as data transfer, even in the same AZ.",
+     "Improves latency, not the billing.",
+     "Elastic IPs are public; the traffic would still be billed.",
+     "Improves performance, not the billing of traffic."
+    ],
+    "r": [
+     "https://aws.amazon.com/ec2/pricing/on-demand/"
+    ],
+    "nt": [
+     "net-vpc"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A security team must keep VPC Flow Logs for all VPCs for 1 year and query them a few times a month. Today the logs go to CloudWatch Logs and the ingestion cost is high.",
+     "Which solution is MOST cost-effective?"
+    ],
+    "o": [
+     "Turn off the flow logs and use CloudTrail instead.",
+     "Publish the flow logs to Amazon S3 in Parquet format and query them with Amazon Athena.",
+     "Send the flow logs to Amazon OpenSearch Service hot storage.",
+     "Keep CloudWatch Logs and increase the retention to 1 year."
+    ],
+    "a": [
+     1
+    ],
+    "k": "infrequently queried flow logs → S3 (Parquet) + Athena",
+    "x": [
+     "CloudTrail records API calls, not network traffic.",
+     "Delivery to S3 costs less than CloudWatch Logs ingestion, Parquet cuts storage and Athena scan costs, and lifecycle rules handle the year of retention.",
+     "Hot OpenSearch storage is expensive for data queried a few times a month.",
+     "Keeps the expensive ingestion and adds storage cost."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs-s3.html"
+    ],
+    "nt": [
+     "sec-observe"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A website serves users almost entirely in North America and Europe through Amazon CloudFront. The company wants to cut CloudFront cost and accepts slightly higher latency for the few users elsewhere.",
+     "What should the company do?"
+    ],
+    "o": [
+     "Move to a Network Load Balancer.",
+     "Disable caching.",
+     "Choose a lower CloudFront price class that only uses edge locations in the cheaper Regions.",
+     "Enable Origin Shield in every Region."
+    ],
+    "a": [
+     2
+    ],
+    "k": "CloudFront cost by geography → price class",
+    "x": [
+     "Loses the global cache entirely.",
+     "More requests go to the origin, raising cost and latency.",
+     "Price classes exclude the most expensive edge locations. Users elsewhere are served from the nearest included location, with a bit more latency.",
+     "Origin Shield adds a charge; it reduces origin load, not edge pricing."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PriceClass.html"
+    ],
+    "nt": [
+     "sec-edge"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A company points its apex domain example.com at an Application Load Balancer and receives millions of DNS queries per day.",
+     "Which Route 53 record type is correct and MOST cost-effective?"
+    ],
+    "o": [
+     "An A record with the ALB's current IP addresses.",
+     "A CNAME record pointing to the ALB DNS name.",
+     "An alias A record pointing to the ALB.",
+     "A TXT record with the ALB name."
+    ],
+    "a": [
+     2
+    ],
+    "k": "apex → AWS resource: alias record (allowed at apex, queries to AWS resources are free)",
+    "x": [
+     "ALB IP addresses change; hard-coding them breaks the site.",
+     "CNAME records are not allowed at the zone apex, and their queries are billed.",
+     "Alias records work at the apex, follow the ALB's changing IPs, and Route 53 does not charge for alias queries to AWS resources such as ELB.",
+     "TXT records do not route traffic."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-choosing-alias-non-alias.html"
+    ],
+    "nt": [
+     "net-r53"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "A gaming company runs its UDP game servers behind Network Load Balancers in two Regions. Players' clients connect to a hard-coded IP address and cannot rely on DNS changes. If one Region fails, traffic must move to the other within seconds.",
+     "Which solution meets these requirements?"
+    ],
+    "o": [
+     "An Application Load Balancer in each Region with cross-zone load balancing.",
+     "Amazon CloudFront with an origin group.",
+     "AWS Global Accelerator with an endpoint group in each Region.",
+     "Route 53 failover routing with health checks."
+    ],
+    "a": [
+     2
+    ],
+    "k": "static IPs + non-HTTP + Regional failover in seconds → Global Accelerator",
+    "x": [
+     "ALBs are HTTP only and Regional; they do not fail over between Regions.",
+     "CloudFront is for HTTP(S), not UDP game traffic.",
+     "Global Accelerator gives two static anycast IPs and shifts traffic between endpoint groups based on health, without DNS changes.",
+     "DNS failover depends on clients re-resolving names and on TTLs, and the clients use fixed IPs."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/global-accelerator/latest/dg/what-is-global-accelerator.html"
+    ],
+    "nt": [
+     "dr-edge"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "A company runs the same web application in two Regions and wants users to go to the Region with the lowest latency. If one Region becomes unhealthy, all users must go to the other automatically.",
+     "Which Route 53 configuration meets these requirements?"
+    ],
+    "o": [
+     "Geolocation routing without health checks.",
+     "Latency-based routing records with health checks (or Evaluate target health on alias records).",
+     "Simple routing with two IP addresses.",
+     "Weighted routing with equal weights and no health checks."
+    ],
+    "a": [
+     1
+    ],
+    "k": "active-active by latency + automatic failover → latency routing + health checks",
+    "x": [
+     "Without health checks, users keep being sent to the failed Region.",
+     "Route 53 answers with the lowest-latency healthy Region; an unhealthy record is skipped.",
+     "Simple routing has no health awareness.",
+     "Spreads users randomly and does not fail over."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy-latency.html"
+    ],
+    "nt": [
+     "net-r53"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "A partner must allowlist the IP addresses of a company's public TCP service. The service must stay available if an Availability Zone fails.",
+     "Which solution meets these requirements?"
+    ],
+    "o": [
+     "An Application Load Balancer, sharing its current IPs with the partner.",
+     "A single EC2 instance with an Elastic IP.",
+     "A Network Load Balancer in two AZs with an Elastic IP address assigned in each subnet.",
+     "A Route 53 CNAME to the instances."
+    ],
+    "a": [
+     2
+    ],
+    "k": "static IPs to allowlist + multi-AZ → NLB with one Elastic IP per AZ",
+    "x": [
+     "ALB IP addresses change over time.",
+     "One instance in one AZ is a single point of failure.",
+     "An NLB can use one Elastic IP per AZ, giving fixed addresses and multi-AZ availability.",
+     "DNS names cannot be allowlisted as fixed IPs, and instance IPs can change."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/elasticloadbalancing/latest/network/network-load-balancers.html"
+    ],
+    "nt": [
+     "cmp-elb"
+    ]
    }
   ]
  },
@@ -5686,6 +6037,537 @@
     "nt": [
      "cmp-placement"
     ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A company runs a steady fleet of m6i instances 24/7 for the next 3 years. The architecture team expects to move part of the fleet to a newer instance family within 18 months, but wants the deepest discount available that still allows that change.",
+     "Which purchase option meets these requirements?"
+    ],
+    "o": [
+     "Spot Instances with a maximum price equal to the On-Demand price.",
+     "Standard Reserved Instances for 3 years, all upfront.",
+     "On-Demand Capacity Reservations for 3 years.",
+     "Convertible Reserved Instances for 3 years."
+    ],
+    "a": [
+     3
+    ],
+    "k": "commitment + must change instance family later → Convertible RI (or Compute Savings Plan)",
+    "x": [
+     "Spot can be interrupted at any time, which is not acceptable for a steady 24/7 fleet.",
+     "Standard RIs give the biggest discount but cannot be exchanged for another instance family. They can only be modified within the family or sold on the Marketplace.",
+     "Capacity Reservations guarantee capacity but give no discount by themselves; you pay On-Demand rates.",
+     "Convertible RIs can be exchanged for other families, sizes, OSs or tenancies of equal or greater value, keeping a 3-year discount."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-reserved-instances.html"
+    ],
+    "nt": [
+     "cmp-pricing"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A company must guarantee EC2 capacity in one specific Availability Zone for a 6-week product launch. After the launch the capacity is no longer needed. The company also has a Compute Savings Plan that covers its baseline usage.",
+     "Which solution meets these requirements MOST cost-effectively?"
+    ],
+    "o": [
+     "Create an On-Demand Capacity Reservation in that Availability Zone for the launch period and cancel it afterwards.",
+     "Buy a second Compute Savings Plan for 1 year.",
+     "Launch the instances as Spot Instances in that Availability Zone.",
+     "Buy zonal Standard Reserved Instances for 1 year in that Availability Zone."
+    ],
+    "a": [
+     0
+    ],
+    "k": "guaranteed capacity for a short period → On-Demand Capacity Reservation (Savings Plans still apply to it)",
+    "x": [
+     "Capacity Reservations can be created and cancelled at any time and are billed only while active. Existing Savings Plans discounts apply to reserved capacity that is used.",
+     "A Savings Plan gives a discount, not a capacity guarantee, and adds a 1-year commitment.",
+     "Spot gives no capacity guarantee.",
+     "A 1-year commitment for a 6-week need wastes ~10 months of reservation."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-capacity-reservations.html"
+    ],
+    "nt": [
+     "cmp-pricing"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A company is moving a database server to EC2. Its existing software license is priced per physical CPU socket and core, and the license terms require the server to run on hardware dedicated to the company. The company wants to reuse the license (BYOL).",
+     "Which EC2 option meets these requirements?"
+    ],
+    "o": [
+     "Default tenancy with Reserved Instances",
+     "Dedicated Instances",
+     "Dedicated Hosts",
+     "Spot Instances with a placement group"
+    ],
+    "a": [
+     2
+    ],
+    "k": "BYOL per socket/core on dedicated hardware → Dedicated Hosts (visibility of sockets and cores)",
+    "x": [
+     "Default tenancy shares hardware with other customers, which the license terms forbid.",
+     "Dedicated Instances run on single-tenant hardware but do not expose sockets and physical cores, so per-socket licenses cannot be counted.",
+     "Dedicated Hosts give a whole physical server with visibility of sockets and cores, which is what socket- and core-based BYOL needs.",
+     "Spot and placement groups say nothing about dedicated hardware or license counting."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-hosts-overview.html"
+    ],
+    "nt": [
+     "cmp-pricing"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A Java API on AWS Lambda has slow cold starts. The team enabled provisioned concurrency to fix it, but the cost is now too high because traffic is very spiky and most provisioned environments sit idle.",
+     "Which change reduces cost while keeping cold starts short?"
+    ],
+    "o": [
+     "Move the function into a VPC.",
+     "Increase the memory of the function to 10 GB.",
+     "Enable Lambda SnapStart on the function and remove provisioned concurrency.",
+     "Set reserved concurrency to the expected peak."
+    ],
+    "a": [
+     2
+    ],
+    "k": "Java cold starts without paying for idle capacity → SnapStart",
+    "x": [
+     "A VPC does not reduce cold starts and adds networking concerns.",
+     "More memory can speed initialization a little but raises the price of every invocation.",
+     "SnapStart restores the function from a snapshot of the initialized execution environment, cutting Java cold starts without paying for always-on environments.",
+     "Reserved concurrency only caps or reserves concurrency; it does not pre-initialize environments."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html"
+    ],
+    "nt": [
+     "cmp-lambda"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A Lambda function calls a third-party API that takes up to 10 minutes to send its result to a webhook. The function currently waits for the response, so it is billed for the whole wait.",
+     "Which solution reduces cost with the LEAST change to the business logic?"
+    ],
+    "o": [
+     "Orchestrate the call with AWS Step Functions using the wait-for-callback task token pattern, so no compute runs while waiting.",
+     "Poll the third-party API every second from the function.",
+     "Run the function on a larger EC2 instance.",
+     "Increase the Lambda timeout to 15 minutes."
+    ],
+    "a": [
+     0
+    ],
+    "k": "paying Lambda to wait → Step Functions callback (.waitForTaskToken)",
+    "x": [
+     "With a task token, the workflow pauses at no compute cost until the webhook calls SendTaskSuccess. Standard workflows charge per state transition, not per second of waiting.",
+     "Polling keeps the function running and adds API calls.",
+     "An always-on instance costs more than Lambda for an occasional wait.",
+     "Lets it wait longer but keeps paying for idle time."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/step-functions/latest/dg/connect-to-resource.html"
+    ],
+    "nt": [
+     "dec-orch",
+     "cmp-lambda"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A containerized service runs on AWS Fargate at a steady 70–80% CPU utilization all day, every day. The team is comfortable managing instances.",
+     "Which option is MOST likely to lower compute cost for this service?"
+    ],
+    "o": [
+     "Double the Fargate task size.",
+     "Run it on ECS with an EC2 capacity provider backed by right-sized instances covered by a Savings Plan.",
+     "Move it to Fargate Spot only.",
+     "Move it to AWS Lambda."
+    ],
+    "a": [
+     1
+    ],
+    "k": "steady, high-utilization containers → EC2-backed ECS (+ Savings Plans) is usually cheaper than Fargate",
+    "x": [
+     "Bigger tasks cost more for the same work.",
+     "Fargate charges a premium for not managing hosts. At steady high utilization, bin-packed EC2 instances with a Savings Plan usually cost less.",
+     "Fargate Spot can be interrupted; a single always-on service needs On-Demand capacity at least for its baseline.",
+     "Lambda bills per request and duration; for a constantly busy service it is usually the most expensive option, and long-running servers are not its model."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/capacity-launch-type-comparison.html"
+    ],
+    "nt": [
+     "cmp-containers"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "An ECS service on Fargate must keep at least 2 tasks always running. Extra tasks during peaks are stateless and can tolerate interruption.",
+     "Which configuration is MOST cost-effective?"
+    ],
+    "o": [
+     "EC2 On-Demand instances sized for peak load.",
+     "A capacity provider strategy with FARGATE base = 2 and FARGATE_SPOT carrying the rest of the weight.",
+     "Only FARGATE, with a larger minimum task count.",
+     "Only FARGATE_SPOT for all tasks."
+    ],
+    "a": [
+     1
+    ],
+    "k": "guaranteed baseline + interruptible burst → FARGATE base + FARGATE_SPOT weight",
+    "x": [
+     "Sizing for peak leaves capacity idle most of the time.",
+     "The base keeps 2 tasks on regular Fargate; the weight sends additional tasks to Fargate Spot at a large discount.",
+     "Works, but every peak task pays the full Fargate price.",
+     "All tasks could be interrupted together, breaking the 2-task minimum."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-capacity-providers.html"
+    ],
+    "nt": [
+     "cmp-containers"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "An internal web application on EC2 is used only from 08:00 to 20:00 on weekdays. Load is predictable and drops to almost zero outside those hours.",
+     "Which solution reduces cost with the LEAST operational effort?"
+    ],
+    "o": [
+     "Buy Reserved Instances for the peak capacity.",
+     "Manually terminate instances every evening.",
+     "Scheduled scaling actions on the Auto Scaling group to scale in at night and on weekends and scale out before working hours.",
+     "Use a larger instance type to handle peaks with fewer instances."
+    ],
+    "a": [
+     2
+    ],
+    "k": "predictable time-based load → scheduled scaling",
+    "x": [
+     "RIs bill 24/7, so capacity reserved for peak is paid even when it is idle.",
+     "Works, but it is manual and error-prone.",
+     "Scheduled actions change desired and minimum capacity at known times, so the group does not run peak capacity at night.",
+     "Does not remove capacity outside working hours."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-scheduled-scaling.html"
+    ],
+    "nt": [
+     "cmp-asg"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A Spot Fleet for a batch workload requests a single instance type in one Availability Zone with the lowestPrice allocation strategy. It suffers frequent interruptions.",
+     "Which TWO changes reduce interruptions while keeping Spot savings? (Select TWO.)"
+    ],
+    "o": [
+     "Allow many instance types and all Availability Zones in the request.",
+     "Use the price-capacity-optimized allocation strategy.",
+     "Switch the fleet to On-Demand Instances.",
+     "Set the maximum price to 10% of the On-Demand price.",
+     "Use a cluster placement group."
+    ],
+    "a": [
+     0,
+     1
+    ],
+    "k": "fewer Spot interruptions → diversify types and AZs + price-capacity-optimized",
+    "x": [
+     "More pools mean more spare capacity to draw from and fewer interruptions when one pool is reclaimed.",
+     "Chooses pools with the most spare capacity among the cheapest, which lowers the chance of interruption.",
+     "Removes interruptions but also removes the savings.",
+     "A lower max price makes interruptions more likely, not less.",
+     "A cluster placement group concentrates instances in one AZ and reduces available capacity."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-allocation-strategy.html"
+    ],
+    "nt": [
+     "cmp-pricing"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A small internal tool runs on a t3.large instance in unlimited mode. Average CPU is 60% all day, and the monthly bill shows significant charges for surplus CPU credits.",
+     "Which change is MOST cost-effective?"
+    ],
+    "o": [
+     "Switch to t3 standard mode.",
+     "Move to a fixed-performance instance (for example m7g or m6i) of the right size.",
+     "Move to a larger burstable instance in unlimited mode.",
+     "Add a second t3.large behind a load balancer."
+    ],
+    "a": [
+     1
+    ],
+    "k": "burstable instance running hot all the time → fixed-performance instance",
+    "x": [
+     "Standard mode stops the surplus charges by throttling the instance to its baseline, so the tool becomes slow.",
+     "Burstable instances suit low average CPU. At a sustained 60%, a fixed-performance instance is cheaper than paying for surplus credits.",
+     "A bigger burstable instance has a higher baseline but is still the wrong model for constant load.",
+     "Doubles the instance cost and adds a load balancer."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances-unlimited-mode.html"
+    ],
+    "nt": [
+     "cmp-pricing"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A company bought 3-year Standard Reserved Instances. After a migration to containers on Fargate, a third of those RIs are no longer used and have 20 months left.",
+     "What can the company do to recover part of the cost?"
+    ],
+    "o": [
+     "Exchange them for a Compute Savings Plan.",
+     "Convert them to Convertible RIs.",
+     "Ask AWS to cancel them for a refund.",
+     "Sell the unused Standard RIs on the Reserved Instance Marketplace."
+    ],
+    "a": [
+     3
+    ],
+    "k": "unused Standard RIs → sell on the RI Marketplace",
+    "x": [
+     "There is no exchange from RIs to Savings Plans.",
+     "Standard RIs cannot be converted to Convertible.",
+     "RIs are a commitment; AWS does not refund them.",
+     "Standard RIs can be sold to other customers on the Marketplace for the remaining term."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-market-general.html"
+    ],
+    "nt": [
+     "cmp-pricing"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A company's compute usage has a floor of $40/hour that never drops, and peaks of up to $90/hour during business hours. It wants to buy a Compute Savings Plan.",
+     "What hourly commitment is MOST cost-effective?"
+    ],
+    "o": [
+     "$0; use only Spot.",
+     "$90/hour, to cover the peaks.",
+     "About $40/hour, matching the steady floor, with peaks on On-Demand or Spot.",
+     "$65/hour, the average of floor and peak."
+    ],
+    "a": [
+     2
+    ],
+    "k": "Savings Plans: commit to the baseline you always use, not the peak",
+    "x": [
+     "Spot cannot safely carry the steady floor.",
+     "Any commitment not used in an hour is lost, so the gap between peak and floor is wasted most hours.",
+     "Commitment at the floor is used fully every hour. Variable usage above it is better served by On-Demand or Spot.",
+     "Still wastes commitment in every off-peak hour."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/savingsplans/latest/userguide/what-is-savings-plans.html"
+    ],
+    "nt": [
+     "cmp-pricing"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A company runs Apache Spark on Amazon EMR every night. Job completion time is flexible, but the cluster's primary node and HDFS data must not be lost.",
+     "Which instance purchasing configuration is MOST cost-effective?"
+    ],
+    "o": [
+     "Primary on Spot, core and task On-Demand.",
+     "Primary and core nodes On-Demand, task nodes on Spot.",
+     "All nodes on Spot.",
+     "All nodes On-Demand."
+    ],
+    "a": [
+     1
+    ],
+    "k": "EMR cost: On-Demand primary/core (state), Spot task nodes (no HDFS)",
+    "x": [
+     "Interrupting the primary node terminates the cluster.",
+     "Task nodes hold no HDFS data, so Spot interruptions only slow the job. Primary and core keep the cluster and its data safe.",
+     "Losing the primary or core nodes to interruption can kill the cluster or lose HDFS data.",
+     "Safe but misses large savings on task nodes."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-instances-guidelines.html"
+    ],
+    "nt": [
+     "cmp-pricing",
+     "dr-analytics"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "A Network Load Balancer spans two Availability Zones. AZ A has 2 targets and AZ B has 8. The targets in AZ A are overloaded while those in AZ B are mostly idle.",
+     "What is the MOST likely cause, and the fix?"
+    ],
+    "o": [
+     "Sticky sessions are enabled; disable them.",
+     "Health checks are too frequent; lower their interval.",
+     "Cross-zone load balancing is disabled on the NLB; enable it so each target gets an even share.",
+     "The NLB needs a larger instance size."
+    ],
+    "a": [
+     2
+    ],
+    "k": "uneven targets per AZ + NLB → cross-zone load balancing (off by default on NLB)",
+    "x": [
+     "NLB stickiness is not the cause of a per-AZ imbalance.",
+     "Health check frequency does not shift load.",
+     "Without cross-zone, each AZ node sends its half of the traffic only to its own AZ, so 2 targets take 50% of the load. Cross-zone spreads it across all 10.",
+     "NLBs have no instance size."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/elasticloadbalancing/latest/network/network-load-balancers.html"
+    ],
+    "nt": [
+     "cmp-elb"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "An ECS service on Fargate sometimes receives a broken image. The new tasks fail their health checks, and the service keeps trying to start them while the old tasks are gone.",
+     "Which feature rolls back automatically to the last working deployment?"
+    ],
+    "o": [
+     "Service Auto Scaling target tracking.",
+     "The ECS deployment circuit breaker with rollback enabled.",
+     "Fargate Spot.",
+     "A larger desired count."
+    ],
+    "a": [
+     1
+    ],
+    "k": "ECS failing deployments → deployment circuit breaker + rollback",
+    "x": [
+     "Scales a healthy service; it does not judge a deployment.",
+     "The circuit breaker detects deployments that cannot reach a steady state and, with rollback on, returns to the last completed deployment.",
+     "Unrelated to deployments.",
+     "More tasks of the broken image do not fix it."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-circuit-breaker.html"
+    ],
+    "nt": [
+     "cmp-containers"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "An account runs many Lambda functions. During traffic spikes, a low-priority batch function scales up and uses the account's concurrency, and the critical payments function is throttled.",
+     "Which TWO actions protect the payments function? (Select TWO.)"
+    ],
+    "o": [
+     "Configure reserved concurrency on the payments function.",
+     "Move the payments function into a VPC.",
+     "Enable SnapStart on the batch function.",
+     "Increase the payments function's memory.",
+     "Set a lower reserved concurrency on the batch function to cap it."
+    ],
+    "a": [
+     0,
+     4
+    ],
+    "k": "protect a critical Lambda from noisy neighbors → reserve its concurrency + cap the others",
+    "x": [
+     "Reserved concurrency guarantees the payments function its share of the account limit.",
+     "Has no effect on concurrency.",
+     "SnapStart shortens cold starts; it does not limit concurrency.",
+     "Memory does not change concurrency.",
+     "Reserved concurrency also caps a function, so the batch job cannot take the whole pool."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html"
+    ],
+    "nt": [
+     "cmp-lambda"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "Workers on EC2 in an Auto Scaling group process jobs from an SQS queue. When jobs pile up, processing falls hours behind, because the group scales on average CPU, which stays moderate.",
+     "Which scaling approach keeps the backlog under control?"
+    ],
+    "o": [
+     "Use a larger instance type with the same CPU policy.",
+     "Target tracking on a custom metric: messages visible in the queue divided by the number of running instances (backlog per instance).",
+     "Scale on network traffic.",
+     "Scheduled scaling at fixed times."
+    ],
+    "a": [
+     1
+    ],
+    "k": "queue workers → scale on backlog per instance",
+    "x": [
+     "The policy still ignores the backlog.",
+     "Backlog per instance relates the queue depth to the capacity that drains it, which is what CPU fails to show.",
+     "Network traffic does not reflect queued work.",
+     "Job arrivals are not tied to fixed times."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-using-sqs-queue.html"
+    ],
+    "nt": [
+     "cmp-asg",
+     "dec-sqs"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "An application on EC2 must keep serving traffic while the team patches the AMI. The team wants to replace instances gradually and stop automatically if the new instances fail health checks.",
+     "Which solution meets these requirements?"
+    ],
+    "o": [
+     "Terminate all instances at once so the group launches new ones.",
+     "Create a new ASG and switch DNS manually.",
+     "Auto Scaling group instance refresh with a minimum healthy percentage and checkpoints, plus automatic rollback.",
+     "Patch the instances in place over SSH."
+    ],
+    "a": [
+     2
+    ],
+    "k": "gradual AMI rollout with automatic rollback → instance refresh (min healthy %, rollback)",
+    "x": [
+     "Causes downtime.",
+     "Possible, but manual and without automatic rollback.",
+     "Instance refresh replaces instances in batches, keeps a minimum share healthy, and can roll back when the refresh fails.",
+     "Manual, error-prone, and the AMI stays unpatched for new instances."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/autoscaling/ec2/userguide/asg-instance-refresh.html"
+    ],
+    "nt": [
+     "cmp-asg"
+    ]
    }
   ]
  },
@@ -7539,6 +8421,331 @@
     "nt": [
      "sto-classes"
     ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A media company stores 2 PB of raw footage. New footage is edited heavily for 30 days and then almost never read. When it is read, editors can wait up to 12 hours, and retrievals happen a few times a year in large batches.",
+     "Which retrieval option should the company use when restoring from S3 Glacier Flexible Retrieval to keep cost lowest?"
+    ],
+    "o": [
+     "Bulk retrieval",
+     "Standard retrieval",
+     "Expedited retrieval",
+     "Provisioned retrieval capacity"
+    ],
+    "a": [
+     0
+    ],
+    "k": "Glacier Flexible Retrieval + can wait hours + large batches → Bulk retrieval (cheapest)",
+    "x": [
+     "Bulk retrieval (5–12 hours) is the cheapest option and fits large batches with a 12-hour window.",
+     "Standard (3–5 hours) costs more than Bulk and the speed is not needed.",
+     "Expedited returns data in minutes at the highest price per GB.",
+     "Provisioned capacity is for guaranteeing Expedited retrievals and adds a fixed charge."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AmazonS3/latest/userguide/restoring-objects-retrieval-options.html"
+    ],
+    "nt": [
+     "sto-classes"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A company wants to add an S3 Lifecycle rule to move objects in a large bucket to S3 Standard-IA, but it does not know after how many days the objects stop being read.",
+     "Which feature helps choose the transition age?"
+    ],
+    "o": [
+     "S3 Inventory",
+     "S3 Storage Class Analysis",
+     "Amazon Macie",
+     "S3 Object Lock"
+    ],
+    "a": [
+     1
+    ],
+    "k": "decide when to transition to IA from real access patterns → Storage Class Analysis",
+    "x": [
+     "Inventory lists objects and their metadata, not how often they are read.",
+     "Storage Class Analysis watches access patterns by age and recommends when data can move to Standard-IA.",
+     "Macie finds sensitive data.",
+     "Object Lock prevents deletion; it has nothing to do with access patterns."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AmazonS3/latest/userguide/analytics-storage-class.html"
+    ],
+    "nt": [
+     "sto-classes"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A log-processing application reads large files sequentially at high throughput. The data is about 20 TB on EBS gp3 volumes and is processed once a day.",
+     "Which EBS volume type is MOST cost-effective?"
+    ],
+    "o": [
+     "gp3 with maximum provisioned IOPS",
+     "Instance store on a storage-optimized instance",
+     "st1 Throughput Optimized HDD",
+     "io2 Block Express"
+    ],
+    "a": [
+     2
+    ],
+    "k": "large, sequential, throughput-heavy, not latency-critical → st1",
+    "x": [
+     "Extra IOPS cost more and do not help sequential throughput.",
+     "Instance store is lost when the instance stops, and 20 TB would need a large instance running all the time.",
+     "st1 is HDD-backed, priced well below gp3 per GB, and built for large sequential throughput such as log processing.",
+     "io2 is for low-latency, high-IOPS databases and is the most expensive option."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html"
+    ],
+    "nt": [
+     "sto-ebs"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "An operations team takes daily EBS snapshots of 300 volumes with a script. Old snapshots are never deleted, and snapshot storage keeps growing.",
+     "Which solution reduces cost with the LEAST operational effort?"
+    ],
+    "o": [
+     "Take full AMIs instead of snapshots.",
+     "Use Amazon Data Lifecycle Manager policies to create snapshots on a schedule and delete them after the retention period.",
+     "Copy the snapshots to S3 Glacier manually every month.",
+     "Stop taking snapshots."
+    ],
+    "a": [
+     1
+    ],
+    "k": "automate snapshot creation + retention → Data Lifecycle Manager",
+    "x": [
+     "AMIs include snapshots too, so storage keeps growing.",
+     "DLM creates and expires snapshots by tag and schedule, so retention is enforced with no script to maintain.",
+     "Manual and snapshots cannot be copied directly to Glacier like that.",
+     "Removes the backups."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/ebs/latest/userguide/snapshot-lifecycle.html"
+    ],
+    "nt": [
+     "sto-ebs"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A company uses AWS Backup for RDS, EFS and EBS. Backups must be kept for 7 years for compliance, but restores older than 3 months are very rare.",
+     "Which configuration is MOST cost-effective?"
+    ],
+    "o": [
+     "Keep all backups in warm storage for 7 years.",
+     "Take backups only once a year.",
+     "Export all backups to an EC2 instance store.",
+     "Add a lifecycle rule to the backup plan that moves recovery points to cold storage after 90 days and deletes them after 7 years."
+    ],
+    "a": [
+     3
+    ],
+    "k": "long retention + rare restores → AWS Backup lifecycle to cold storage",
+    "x": [
+     "Warm storage costs more per GB for data that is almost never restored.",
+     "Breaks recovery point objectives.",
+     "Instance store is not durable.",
+     "Cold storage costs much less per GB for resources that support it. The plan moves and expires recovery points automatically."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/aws-backup/latest/devguide/creating-a-backup-plan.html"
+    ],
+    "nt": [
+     "dr-cost"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A company replicates a 500 TB S3 bucket to another Region for disaster recovery with Cross-Region Replication. The DR copy is only needed if the primary Region fails.",
+     "Which change reduces the cost of the replica with the LEAST impact on recovery?"
+    ],
+    "o": [
+     "Replace replication with weekly manual copies.",
+     "Disable versioning on the source bucket.",
+     "Set the replication rule's destination storage class to S3 Glacier Instant Retrieval or Standard-IA.",
+     "Replicate to a bucket in the same Region."
+    ],
+    "a": [
+     2
+    ],
+    "k": "DR replica rarely read → cheaper destination storage class in the replication rule",
+    "x": [
+     "Increases RPO to a week and adds manual work.",
+     "Replication requires versioning on both buckets.",
+     "Replication can write directly into a cheaper class. The data stays immediately available if the replica is needed.",
+     "Does not protect against a Regional failure."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html"
+    ],
+    "nt": [
+     "sto-s3protect",
+     "dr-cost"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A team stores 80 TB of Windows file shares on Amazon FSx for Windows File Server with SSD storage. Most files are documents that are rarely opened, and users accept slightly higher latency.",
+     "Which TWO actions reduce cost? (Select TWO.)"
+    ],
+    "o": [
+     "Use HDD storage for the file system.",
+     "Move to FSx for Lustre.",
+     "Enable data deduplication.",
+     "Replicate the file system to a second Region.",
+     "Increase throughput capacity."
+    ],
+    "a": [
+     0,
+     2
+    ],
+    "k": "FSx for Windows cost → HDD storage + data deduplication",
+    "x": [
+     "HDD storage costs much less per GB and fits general-purpose shares with relaxed latency.",
+     "Lustre is for high-performance computing and does not speak SMB to Windows clients.",
+     "Deduplication often saves a large share of space on document shares.",
+     "Raises cost.",
+     "Raises cost."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/fsx/latest/WindowsGuide/what-is.html"
+    ],
+    "nt": [
+     "sto-files"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "Users around the world upload large videos to a single S3 bucket in eu-west-1. Uploads from Asia are slow. Leadership asks whether S3 Transfer Acceleration would also lower the bill.",
+     "Which statement is correct?"
+    ],
+    "o": [
+     "Transfer Acceleration adds a per-GB charge; it improves speed over long distances, and AWS does not charge it when there is no speed improvement.",
+     "Transfer Acceleration replaces the need for multipart upload.",
+     "Transfer Acceleration moves objects to a cheaper storage class.",
+     "Transfer Acceleration is free and lowers data transfer costs."
+    ],
+    "a": [
+     0
+    ],
+    "k": "Transfer Acceleration = faster long-distance uploads for an extra per-GB fee",
+    "x": [
+     "Correct: it is a speed feature with its own per-GB fee, waived when a transfer is not faster than a regular one.",
+     "Large uploads should still use multipart upload.",
+     "It does not change storage classes.",
+     "It adds a charge on top of normal pricing."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AmazonS3/latest/userguide/transfer-acceleration.html"
+    ],
+    "nt": [
+     "sto-s3perf"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "A content management system stores shared files on Amazon EFS in eu-west-1. The company needs a copy of the file system in another Region with an RPO of minutes for disaster recovery, without writing any scripts.",
+     "Which solution meets these requirements?"
+    ],
+    "o": [
+     "Mount the file system from the other Region over the internet.",
+     "Use AWS DataSync once a day.",
+     "Take EBS snapshots of the file system.",
+     "Enable EFS replication to a file system in the other Region."
+    ],
+    "a": [
+     3
+    ],
+    "k": "EFS cross-Region DR with minutes RPO → EFS replication",
+    "x": [
+     "Does not create a copy; the data is still in one Region.",
+     "A daily copy gives an RPO of a day.",
+     "EFS is not an EBS volume.",
+     "EFS replication keeps a read-only copy in another Region, with an RPO of minutes for most file systems and failover by promoting the replica."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/efs/latest/ug/efs-replication.html"
+    ],
+    "nt": [
+     "sto-files",
+     "dr-strategies"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "An application writes to S3 buckets in two Regions that are kept in sync with bidirectional replication. The company wants a single global endpoint for the application and the ability to shift all S3 traffic to one Region during an outage.",
+     "Which solution meets these requirements?"
+    ],
+    "o": [
+     "Route 53 latency records pointing to each bucket website endpoint.",
+     "A CloudFront distribution in front of each bucket.",
+     "S3 Transfer Acceleration.",
+     "S3 Multi-Region Access Points with failover controls."
+    ],
+    "a": [
+     3
+    ],
+    "k": "one global S3 endpoint + active/passive failover between Regions → Multi-Region Access Points",
+    "x": [
+     "Website endpoints serve public, read-only content over HTTP only.",
+     "CloudFront caches reads; it does not handle writes and failover across replicated buckets.",
+     "Transfer Acceleration speeds uploads to one bucket.",
+     "A Multi-Region Access Point gives one endpoint across buckets in several Regions, and failover controls move traffic between them in minutes."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AmazonS3/latest/userguide/MultiRegionAccessPoints.html"
+    ],
+    "nt": [
+     "sto-s3protect",
+     "dr-strategies"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "A database on EC2 uses an io2 volume. The company needs crash-consistent backups of several EBS volumes attached to the same instance, taken at exactly the same point in time.",
+     "Which solution meets this requirement?"
+    ],
+    "o": [
+     "Create multi-volume snapshots of the instance's volumes.",
+     "Enable EBS Multi-Attach.",
+     "Copy the files to S3 every hour.",
+     "Snapshot each volume one after another with a script."
+    ],
+    "a": [
+     0
+    ],
+    "k": "consistent point in time across several EBS volumes → multi-volume snapshots",
+    "x": [
+     "Multi-volume snapshots capture all volumes attached to an instance at the same moment, giving crash-consistent backups.",
+     "Multi-Attach shares one volume between instances; it is not a backup.",
+     "File copies do not give a consistent block-level point in time.",
+     "Sequential snapshots are taken at different moments, so the set may be inconsistent."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-create-snapshots.html"
+    ],
+    "nt": [
+     "sto-ebs"
+    ]
    }
   ]
  },
@@ -9264,6 +10471,417 @@
      "db-purpose",
      "dr-analytics"
     ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "An Aurora PostgreSQL cluster runs a write-heavy workload. The bill shows that I/O charges are about 40% of the cluster's total cost and growing.",
+     "Which change is MOST likely to reduce cost?"
+    ],
+    "o": [
+     "Switch the cluster storage configuration to Aurora I/O-Optimized.",
+     "Enable Performance Insights.",
+     "Move to RDS for PostgreSQL Multi-AZ with gp2.",
+     "Add read replicas."
+    ],
+    "a": [
+     0
+    ],
+    "k": "Aurora with I/O > ~25% of spend → I/O-Optimized",
+    "x": [
+     "I/O-Optimized has no per-request I/O charge and higher compute and storage prices. AWS positions it for clusters where I/O exceeds about 25% of spend.",
+     "Gives visibility, not savings.",
+     "A migration with its own trade-offs; it is not the targeted fix for I/O pricing.",
+     "Replicas add instance cost and do not reduce write I/O."
+    ],
+    "r": [
+     "https://aws.amazon.com/rds/aurora/pricing/"
+    ],
+    "nt": [
+     "db-aurora"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "An RDS for MySQL instance was provisioned with 4 TB of storage to be safe, but only 600 GB is used and growth is slow and unpredictable.",
+     "How can the company avoid paying for unused storage in new databases while protecting against running out of space?"
+    ],
+    "o": [
+     "Provision a small allocation and enable RDS storage autoscaling with a maximum storage threshold.",
+     "Create a read replica with more storage.",
+     "Use instance store for the database.",
+     "Provision 8 TB to be safer."
+    ],
+    "a": [
+     0
+    ],
+    "k": "unpredictable DB growth → start small + storage autoscaling",
+    "x": [
+     "Storage autoscaling grows the volume when free space runs low, up to a maximum you set, so you only pay for what you need.",
+     "Replicas need at least the primary's storage and do not change the primary's allocation.",
+     "RDS does not run on instance store.",
+     "Pays for even more unused storage."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PIOPS.Autoscaling.html"
+    ],
+    "nt": [
+     "db-rds"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A product catalog on Amazon RDS receives 50,000 reads per second for a small set of popular items. The team plans to scale up to a much larger instance class to handle the reads.",
+     "Which solution is MOST cost-effective?"
+    ],
+    "o": [
+     "Scale up to the largest instance class.",
+     "Add five Multi-AZ standbys.",
+     "Move the catalog to S3 Glacier.",
+     "Add an Amazon ElastiCache cache in front of the database for the popular items."
+    ],
+    "a": [
+     3
+    ],
+    "k": "read-heavy hot keys → cache (ElastiCache) instead of a bigger database",
+    "x": [
+     "Expensive, and the database still does all the work.",
+     "Multi-AZ standbys do not serve reads in a standard Multi-AZ instance deployment.",
+     "Glacier is archival storage.",
+     "A cache serves repeated reads from memory at a fraction of the cost of scaling the database."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html"
+    ],
+    "nt": [
+     "db-cache"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A DynamoDB table in provisioned mode has a clear daily pattern: high traffic from 09:00 to 18:00 and very little at night. Capacity is set for the daytime peak all day.",
+     "Which change reduces cost with the LEAST effort?"
+    ],
+    "o": [
+     "Switch to a larger fixed provisioned capacity.",
+     "Add a global secondary index.",
+     "Enable DynamoDB auto scaling on the table's read and write capacity.",
+     "Export the table to S3 every night."
+    ],
+    "a": [
+     2
+    ],
+    "k": "provisioned DynamoDB with a daily pattern → auto scaling",
+    "x": [
+     "Raises cost.",
+     "A GSI adds its own capacity and storage cost.",
+     "Auto scaling adjusts provisioned capacity to the actual traffic, so nights are not billed at peak capacity.",
+     "Does not change the provisioned capacity bill."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/AutoScaling.html"
+    ],
+    "nt": [
+     "db-dynamo"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A DynamoDB table in provisioned mode runs at a stable 20,000 WCU and 50,000 RCU around the clock, and this will not change for at least a year.",
+     "What reduces cost the MOST?"
+    ],
+    "o": [
+     "Switch to on-demand capacity mode.",
+     "Use the Standard-IA table class.",
+     "Buy DynamoDB reserved capacity for the baseline.",
+     "Enable DynamoDB Accelerator (DAX)."
+    ],
+    "a": [
+     2
+    ],
+    "k": "steady, predictable DynamoDB throughput → reserved capacity",
+    "x": [
+     "On-demand costs more per request than well-used provisioned capacity for steady traffic.",
+     "Standard-IA lowers storage cost but raises throughput cost; it fits storage-heavy, rarely read tables.",
+     "Reserved capacity gives a significant discount on provisioned throughput committed for 1 or 3 years.",
+     "DAX adds cluster cost; it helps read latency and hot keys, not steady writes."
+    ],
+    "r": [
+     "https://aws.amazon.com/dynamodb/pricing/provisioned/"
+    ],
+    "nt": [
+     "db-dynamo"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A data warehouse on a provisioned Amazon Redshift cluster is used only for a reporting run a few hours each night. During the day the cluster is idle.",
+     "Which TWO options reduce cost? (Select TWO.)"
+    ],
+    "o": [
+     "Buy 3-year Redshift reserved nodes.",
+     "Move the workload to Amazon Redshift Serverless.",
+     "Pause the cluster when it is idle and resume it before the nightly run.",
+     "Move the data to Amazon RDS.",
+     "Add more nodes to finish faster."
+    ],
+    "a": [
+     1,
+     2
+    ],
+    "k": "intermittent Redshift → pause/resume or Redshift Serverless",
+    "x": [
+     "Reserved nodes discount a cluster running 24/7, which this one does not need to be.",
+     "Serverless charges for compute only while queries run.",
+     "A paused cluster is billed only for storage.",
+     "RDS is not designed for warehouse-style analytics.",
+     "Raises the hourly cost."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/redshift/latest/mgmt/serverless-whatis.html"
+    ],
+    "nt": [
+     "dr-analytics"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A Redshift cluster stores 5 years of sales data, but analysts query only the last 6 months regularly. Older data is queried a few times a year. Storage on the cluster is the largest cost.",
+     "Which solution is MOST cost-effective?"
+    ],
+    "o": [
+     "Copy the old data to a second Redshift cluster.",
+     "Unload the older data to Amazon S3 in Parquet and query it with Redshift Spectrum when needed.",
+     "Delete the old data.",
+     "Add more nodes for the old data."
+    ],
+    "a": [
+     1
+    ],
+    "k": "cold warehouse data → S3 (Parquet) + Redshift Spectrum",
+    "x": [
+     "A second cluster doubles the cost.",
+     "S3 storage is much cheaper, and Spectrum queries it in place alongside cluster tables, paying per data scanned.",
+     "The data must still be queryable a few times a year.",
+     "More nodes cost more."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/redshift/latest/dg/c-using-spectrum.html"
+    ],
+    "nt": [
+     "dr-analytics"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A team stores application logs in Amazon OpenSearch Service and keeps 6 months of data. Only the last 7 days are searched often; older indexes are read-only and searched occasionally.",
+     "Which solution reduces cost?"
+    ],
+    "o": [
+     "Increase the replica count.",
+     "Move indexes older than 7 days to UltraWarm (and later to cold storage) with Index State Management.",
+     "Add more hot data nodes.",
+     "Disable snapshots."
+    ],
+    "a": [
+     1
+    ],
+    "k": "old, read-only OpenSearch indexes → UltraWarm / cold storage",
+    "x": [
+     "Replicas multiply storage cost.",
+     "UltraWarm uses S3-backed storage at a much lower cost per GB for read-only data, and cold storage is cheaper still.",
+     "Raises cost.",
+     "Snapshots protect data; removing them saves little and adds risk."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ultrawarm.html"
+    ],
+    "nt": [
+     "sec-observe"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "An ElastiCache for Redis OSS cluster of 6 nodes has run unchanged for a year and will keep running for at least two more.",
+     "What is the simplest way to reduce its cost?"
+    ],
+    "o": [
+     "Buy ElastiCache reserved nodes for the cluster's node type.",
+     "Move it to EC2 instances with Redis installed.",
+     "Switch to Spot nodes.",
+     "Enable cluster mode."
+    ],
+    "a": [
+     0
+    ],
+    "k": "steady ElastiCache → reserved nodes",
+    "x": [
+     "Reserved nodes discount steady clusters for a 1- or 3-year term.",
+     "Adds operational work and loses the managed service.",
+     "ElastiCache does not offer Spot nodes.",
+     "Cluster mode changes sharding, not pricing."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/CacheNodes.Reserved.html"
+    ],
+    "nt": [
+     "db-cache"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "An Aurora MySQL cluster has a writer and three readers. Two readers are small instances used for reporting; one reader is the same size as the writer. After a failover, a small reporting instance became the writer and the application slowed down.",
+     "How can the company make sure the large reader is promoted first?"
+    ],
+    "o": [
+     "Give the large reader the highest failover priority (tier 0) and the reporting readers lower priorities.",
+     "Turn on Backtrack.",
+     "Use a custom endpoint for reporting.",
+     "Enable Multi-AZ on the writer."
+    ],
+    "a": [
+     0
+    ],
+    "k": "control which Aurora replica is promoted → failover priority tiers",
+    "x": [
+     "Aurora promotes the replica with the highest priority (lowest tier number); on ties it picks the largest instance.",
+     "Backtrack rewinds data; it is not a failover setting.",
+     "Custom endpoints route reads; they do not decide failover order.",
+     "Aurora's high availability already comes from its replicas."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html"
+    ],
+    "nt": [
+     "db-aurora"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "A serverless application on Lambda connects to an Aurora PostgreSQL cluster. During a failover, many functions keep trying stale connections and the application is unavailable for longer than the failover itself.",
+     "Which solution reduces the application's recovery time?"
+    ],
+    "o": [
+     "Use the instance endpoint of the current writer.",
+     "Create a read replica in another Region.",
+     "Increase the Lambda timeout.",
+     "Put Amazon RDS Proxy between Lambda and the database."
+    ],
+    "a": [
+     3
+    ],
+    "k": "faster recovery from DB failover for many clients → RDS Proxy",
+    "x": [
+     "The instance endpoint keeps pointing at the old writer after a failover.",
+     "Does not help an in-Region failover.",
+     "Longer timeouts make clients wait longer.",
+     "RDS Proxy keeps connections pooled and redirects them to the new writer, so clients do not wait for DNS changes and reconnect storms."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy.html"
+    ],
+    "nt": [
+     "db-rds",
+     "cmp-lambda"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "A global application uses ElastiCache for Redis OSS in us-east-1 for session data. The company wants low-latency reads in eu-west-1 and the ability to promote Europe if us-east-1 fails.",
+     "Which solution meets these requirements?"
+    ],
+    "o": [
+     "A second, independent Redis cluster in eu-west-1.",
+     "DynamoDB Accelerator (DAX) in both Regions.",
+     "ElastiCache Global Datastore with a secondary cluster in eu-west-1.",
+     "Snapshots copied to eu-west-1 every day."
+    ],
+    "a": [
+     2
+    ],
+    "k": "cross-Region Redis replication + promotion → ElastiCache Global Datastore",
+    "x": [
+     "No replication: the European cluster would be empty or stale.",
+     "DAX caches DynamoDB, not Redis sessions.",
+     "Global Datastore replicates to a read-only secondary cluster in another Region, which can be promoted to primary.",
+     "Daily snapshots lose up to a day of sessions."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/Redis-Global-Datastore.html"
+    ],
+    "nt": [
+     "db-cache"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "A DynamoDB table holds critical orders. Compliance requires backups stored in a different AWS account and Region from the production table, managed centrally with other services' backups.",
+     "Which solution meets these requirements?"
+    ],
+    "o": [
+     "Global tables with a replica in another Region.",
+     "DynamoDB point-in-time recovery only.",
+     "AWS Backup with a backup plan for the table and cross-account, cross-Region copy to a vault in a backup account.",
+     "Export the table to S3 in the same account."
+    ],
+    "a": [
+     2
+    ],
+    "k": "backups in another account and Region, centrally managed → AWS Backup cross-account + cross-Region copy",
+    "x": [
+     "Global tables replicate deletes and corruption too, and are not backups.",
+     "PITR stays in the same account and Region.",
+     "AWS Backup supports DynamoDB and can copy recovery points to another account and Region from one place, alongside other services.",
+     "Same account, so a compromise of that account reaches the export."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/aws-backup/latest/devguide/create-cross-account-backup.html"
+    ],
+    "nt": [
+     "db-dynamo",
+     "dr-strategies"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "An application on Aurora PostgreSQL has an unpredictable workload and must survive the failure of an Availability Zone. The team uses Aurora Serverless v2 for the writer.",
+     "What must the team do to make failover to another AZ possible?"
+    ],
+    "o": [
+     "Enable Backtrack.",
+     "Create a cross-Region read replica.",
+     "Add at least one Aurora Serverless v2 (or provisioned) reader in a different AZ.",
+     "Nothing: Serverless v2 writers fail over without readers."
+    ],
+    "a": [
+     2
+    ],
+    "k": "Aurora (including Serverless v2) HA → a reader in another AZ to promote",
+    "x": [
+     "Backtrack rewinds data.",
+     "Cross-Region replicas are for DR, not in-Region AZ failover.",
+     "Aurora fails over by promoting a reader. With no reader, Aurora must create a new writer, which takes much longer.",
+     "Without a reader there is nothing to promote quickly."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.how-it-works.html"
+    ],
+    "nt": [
+     "db-aurora"
+    ]
    }
   ]
  },
@@ -10925,6 +12543,238 @@
      "https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/welcome.html"
     ],
     "h": 1,
+    "nt": [
+     "dec-streams"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A producer sends 50 million small messages per day to an SQS queue, one API call per message. The SQS bill is driven by the number of requests.",
+     "Which change reduces cost the MOST?"
+    ],
+    "o": [
+     "Increase the visibility timeout.",
+     "Use short polling.",
+     "Switch to a FIFO queue.",
+     "Send messages in batches of up to 10 with SendMessageBatch, and receive in batches."
+    ],
+    "a": [
+     3
+    ],
+    "k": "SQS cost per request → batch sends and receives",
+    "x": [
+     "Visibility timeout affects reprocessing, not request count.",
+     "Short polling increases empty receives.",
+     "FIFO queues cost more per request.",
+     "A batch of up to 10 messages is billed as one request (within the size limit), cutting request cost by up to 10x."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-batch-api-actions.html"
+    ],
+    "nt": [
+     "dec-sqs"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A company needs to load clickstream events into Amazon S3 in near real time for later analysis with Athena. There are no custom consumers, and traffic varies a lot during the day.",
+     "Which solution is MOST cost-effective with the LEAST management?"
+    ],
+    "o": [
+     "Amazon Data Firehose delivering directly to S3, with format conversion to Parquet.",
+     "Amazon MQ with a consumer writing to S3.",
+     "Kinesis Data Streams in provisioned mode with a fleet of EC2 consumers writing to S3.",
+     "An SQS queue polled by EC2 instances."
+    ],
+    "a": [
+     0
+    ],
+    "k": "just deliver a stream to S3 → Firehose (no shards, no consumers)",
+    "x": [
+     "Firehose is fully managed, scales with traffic, charges per GB ingested, and can convert to Parquet for cheaper Athena queries.",
+     "A message broker is the wrong tool for streaming into S3.",
+     "Shards and consumer instances must be sized and paid for even when traffic is low.",
+     "Requires running and scaling consumers."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/firehose/latest/dev/what-is-this-service.html"
+    ],
+    "nt": [
+     "dec-streams"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A Kinesis Data Streams stream in provisioned mode has 40 shards sized for occasional peaks. Most of the time traffic is below 10% of that capacity and the peaks are unpredictable.",
+     "Which change reduces cost while still absorbing the peaks?"
+    ],
+    "o": [
+     "Increase the shard count to 80.",
+     "Increase the retention period to 365 days.",
+     "Enable enhanced fan-out for every consumer.",
+     "Switch the stream to on-demand capacity mode."
+    ],
+    "a": [
+     3
+    ],
+    "k": "Kinesis with unpredictable peaks and low average → on-demand mode",
+    "x": [
+     "Doubles the idle cost.",
+     "Longer retention adds cost.",
+     "Enhanced fan-out adds per-consumer charges.",
+     "On-demand mode scales capacity automatically and charges for data written and read, not for idle shard hours."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/streams/latest/dev/how-do-i-size-a-stream.html"
+    ],
+    "nt": [
+     "dec-streams"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A REST API on Amazon API Gateway calls a Lambda function that returns product details. The same product requests repeat thousands of times per minute, and the data changes every few hours.",
+     "Which change reduces Lambda and backend cost?"
+    ],
+    "o": [
+     "Switch the API to a private endpoint.",
+     "Enable API Gateway caching on the stage with a TTL that fits the data refresh.",
+     "Add a usage plan with API keys.",
+     "Increase the Lambda memory."
+    ],
+    "a": [
+     1
+    ],
+    "k": "repeated identical API reads → API Gateway caching",
+    "x": [
+     "Changes who can reach the API, not how often the backend runs.",
+     "The cache answers repeated requests without invoking Lambda, so fewer invocations are billed.",
+     "Usage plans throttle clients; they do not cache.",
+     "Raises the cost per invocation."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html"
+    ],
+    "nt": [
+     "dec-orch"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "A public REST API on API Gateway forwards requests to a backend that fails when it receives more than 500 requests per second. A few clients sometimes send bursts far above that.",
+     "Which solution protects the backend with the LEAST effort?"
+    ],
+    "o": [
+     "Set stage throttling (rate and burst limits) and per-client limits through usage plans with API keys.",
+     "Use a Network Load Balancer instead.",
+     "Turn off API Gateway logging.",
+     "Add more backend instances only."
+    ],
+    "a": [
+     0
+    ],
+    "k": "protect a fragile backend from bursts → API Gateway throttling + usage plans",
+    "x": [
+     "Throttling returns 429 to excess requests before they reach the backend; usage plans limit noisy clients separately.",
+     "Removes the API layer that can throttle.",
+     "Logging has nothing to do with load.",
+     "Helps, but bursts can still exceed any fixed capacity."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-request-throttling.html"
+    ],
+    "nt": [
+     "dec-orch"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "Hundreds of clients call a downstream service. When the service has a brief problem, all clients retry immediately and at the same intervals, and the service is overwhelmed again as soon as it recovers.",
+     "Which client-side change makes the system MORE resilient?"
+    ],
+    "o": [
+     "Use a fixed 1-second retry interval for every client.",
+     "Disable retries completely.",
+     "Retry immediately in a tight loop.",
+     "Retry with exponential backoff and jitter, with a maximum number of attempts."
+    ],
+    "a": [
+     3
+    ],
+    "k": "synchronized retry storms → exponential backoff + jitter",
+    "x": [
+     "A fixed interval keeps clients synchronized.",
+     "Turns every brief error into a failure.",
+     "Makes the overload worse.",
+     "Backoff spaces retries out and jitter randomizes them, so clients do not hit the service at the same moment."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/sdkref/latest/guide/feature-retry-behavior.html"
+    ],
+    "nt": [
+     "dec-sqs"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "A company is moving an application that uses Apache ActiveMQ with JMS to AWS and cannot change the code. The broker must survive the failure of an Availability Zone.",
+     "Which solution meets these requirements?"
+    ],
+    "o": [
+     "A single-instance Amazon MQ broker.",
+     "Amazon MQ for ActiveMQ with an active/standby broker deployment across two AZs.",
+     "Amazon SQS standard queues.",
+     "Amazon SNS topics."
+    ],
+    "a": [
+     1
+    ],
+    "k": "existing JMS/ActiveMQ + HA → Amazon MQ active/standby",
+    "x": [
+     "A single-instance broker is in one AZ.",
+     "Amazon MQ runs ActiveMQ with standard protocols, so the code does not change, and the active/standby deployment fails over to the other AZ.",
+     "SQS needs code changes from JMS.",
+     "SNS is pub/sub and does not speak JMS."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/active-standby-broker-deployment.html"
+    ],
+    "nt": [
+     "dec-pubsub"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "A Kinesis Data Streams application has three consumer applications reading the same stream. They compete for the 2 MB/s read throughput per shard, and two of them fall behind.",
+     "Which change lets every consumer read at full speed without adding shards?"
+    ],
+    "o": [
+     "Use one consumer that writes to the others.",
+     "Switch to SQS FIFO.",
+     "Increase the retention period.",
+     "Register the consumers for enhanced fan-out."
+    ],
+    "a": [
+     3
+    ],
+    "k": "several consumers sharing shard read throughput → enhanced fan-out",
+    "x": [
+     "Adds a single point of failure and latency.",
+     "A queue delivers each message to one consumer, not to all three.",
+     "Lets consumers catch up later, but does not raise throughput.",
+     "Enhanced fan-out gives each registered consumer its own 2 MB/s per shard, pushed over HTTP/2."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/streams/latest/dev/enhanced-consumers.html"
+    ],
     "nt": [
      "dec-streams"
     ]
@@ -14428,6 +16278,153 @@
     "nt": [
      "dr-cost",
      "dr-edge"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "Before migrating 400 on-premises servers, leadership asks for a business case comparing current on-premises cost with the projected AWS cost, based on actual server utilization.",
+     "Which service is designed for this?"
+    ],
+    "o": [
+     "Migration Evaluator",
+     "AWS Cost Explorer",
+     "AWS Trusted Advisor",
+     "AWS Pricing Calculator alone, with servers entered by hand"
+    ],
+    "a": [
+     0
+    ],
+    "k": "TCO business case from real on-premises utilization → Migration Evaluator",
+    "x": [
+     "Migration Evaluator collects on-premises utilization and builds a data-driven business case with right-sized AWS cost projections.",
+     "Cost Explorer analyzes spend that already happened in AWS.",
+     "Trusted Advisor reviews existing AWS accounts.",
+     "Useful for estimating a design, but entering 400 servers by hand without utilization data is slow and inaccurate."
+    ],
+    "r": [
+     "https://aws.amazon.com/migration-evaluator/"
+    ],
+    "nt": [
+     "dr-migrate"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "An architect is designing a new three-tier application and needs a monthly cost estimate to share with the finance team before anything is deployed.",
+     "Which tool should the architect use?"
+    ],
+    "o": [
+     "AWS Cost and Usage Report",
+     "AWS Budgets",
+     "AWS Pricing Calculator",
+     "AWS Cost Explorer"
+    ],
+    "a": [
+     2
+    ],
+    "k": "estimate an architecture before it exists → Pricing Calculator",
+    "x": [
+     "CUR is detailed billing data for usage that already happened.",
+     "Budgets track and alert on actual or forecasted spend.",
+     "Pricing Calculator models services and usage before deployment and produces a shareable estimate.",
+     "Cost Explorer shows spend that already happened."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/pricing-calculator/latest/userguide/what-is-pricing-calculator.html"
+    ],
+    "nt": [
+     "dr-cost"
+    ]
+   },
+   {
+    "d": 4,
+    "q": [
+     "A company needs a disaster recovery plan for a 2 TB Aurora MySQL database. The business accepts an RPO of 24 hours and an RTO of 8 hours, and wants the lowest cost.",
+     "Which solution meets these requirements?"
+    ],
+    "o": [
+     "A cross-Region read replica running on the same instance class.",
+     "Copy automated or manual snapshots to another Region every day with AWS Backup, and restore from them when needed.",
+     "An active-active deployment in two Regions.",
+     "Aurora Global Database with a secondary cluster in another Region."
+    ],
+    "a": [
+     1
+    ],
+    "k": "RPO/RTO in hours + lowest cost → cross-Region snapshot copies (backup and restore)",
+    "x": [
+     "Pays for a running instance all the time to meet a target that snapshots already meet.",
+     "Daily copies meet a 24-hour RPO, and a restore of 2 TB fits in 8 hours. Only snapshot storage is paid until a disaster.",
+     "The most expensive pattern.",
+     "Global Database gives an RPO of about a second, which is far more than needed and pays for a running secondary cluster."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/aws-backup/latest/devguide/cross-region-backup.html"
+    ],
+    "nt": [
+     "dr-strategies",
+     "dr-cost"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "A company is worried that ransomware, or an attacker with administrator access, could delete its backups.",
+     "Which feature makes recovery points in AWS Backup impossible to delete before their retention ends, even for the root user?"
+    ],
+    "o": [
+     "AWS Backup Vault Lock in compliance mode.",
+     "An IAM policy that denies backup:DeleteRecoveryPoint.",
+     "Enabling MFA for the root user.",
+     "S3 versioning on the backup bucket."
+    ],
+    "a": [
+     0
+    ],
+    "k": "immutable backups even against admins/root → Backup Vault Lock (compliance mode)",
+    "x": [
+     "Once the cooling-off period ends, a compliance-mode vault lock cannot be changed or removed by anyone, and recovery points stay until their retention ends.",
+     "An administrator could remove the policy.",
+     "Protects sign-in, not the backups themselves.",
+     "AWS Backup vaults are not S3 buckets you manage."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/aws-backup/latest/devguide/vault-lock.html"
+    ],
+    "nt": [
+     "dr-strategies",
+     "sto-s3protect"
+    ]
+   },
+   {
+    "d": 2,
+    "q": [
+     "A team deploys infrastructure with AWS CloudFormation. A recent update replaced a database by mistake because a property that forces replacement had changed.",
+     "Which practice would have shown this before the update ran?"
+    ],
+    "o": [
+     "Use drift detection after the update.",
+     "Enable termination protection on the stack only.",
+     "Increase the stack's timeout.",
+     "Create and review a change set before executing the update."
+    ],
+    "a": [
+     3
+    ],
+    "k": "see what an update will replace before running it → change sets",
+    "x": [
+     "Drift detection compares live resources with the template after the fact.",
+     "Termination protection stops stack deletion, not replacements during updates.",
+     "Unrelated to what the update changes.",
+     "A change set lists every resource to be added, modified or replaced, so a replacement can be caught before it happens."
+    ],
+    "r": [
+     "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html"
+    ],
+    "nt": [
+     "dr-strategies"
     ]
    }
   ]
