@@ -1,6 +1,6 @@
 # SAA-C03 Practice
 
-Free, open practice for the **AWS Certified Solutions Architect – Associate (SAA-C03)** exam: 550 original scenario questions, a glossary, 48 concept notes and a study plan, in a single static page.
+Free, open practice for the **AWS Certified Solutions Architect – Associate (SAA-C03)** exam: 573 original scenario questions, a glossary, 48 concept notes and a study plan, in a single static page.
 
 **[Open the app →](https://albegosu.github.io/saa-c03-practice/)**
 
@@ -16,12 +16,12 @@ Every option of every question has its own explanation, so a wrong answer teache
 
 | Exam domain | Exam weight | Questions here | Share |
 | --- | --- | --- | --- |
-| 1. Design secure architectures | 30 % | 143 | 26 % |
-| 2. Design resilient architectures | 26 % | 132 | 24 % |
-| 3. Design high-performing architectures | 24 % | 155 | 28 % |
-| 4. Design cost-optimized architectures | 20 % | 120 | 22 % |
+| 1. Design secure architectures | 30 % | 166 | 29 % |
+| 2. Design resilient architectures | 26 % | 132 | 23 % |
+| 3. Design high-performing architectures | 24 % | 155 | 27 % |
+| 4. Design cost-optimized architectures | 20 % | 120 | 21 % |
 
-Domain 1 (security) is the most under-represented relative to the exam. New security questions are the most useful contribution.
+The bank is close to the exam weights. Domain 2 (resilience) is the most useful place to add questions.
 
 ## How to study with it
 
