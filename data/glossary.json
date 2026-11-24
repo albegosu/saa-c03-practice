@@ -1,0 +1,1763 @@
+{
+ "1": [
+  [
+   "IAM",
+   "AWS Identity and Access Management",
+   "Defines who (users, roles) can do what on which AWS resources through JSON policies."
+  ],
+  [
+   "Role",
+   "IAM role",
+   "An identity with permissions but no long-term credentials; assumed to get temporary credentials."
+  ],
+  [
+   "STS",
+   "AWS Security Token Service",
+   "Issues temporary credentials, for example through AssumeRole for cross-account access."
+  ],
+  [
+   "Instance profile",
+   "EC2 instance profile",
+   "Container that attaches an IAM role to an EC2 instance so apps get rotating credentials."
+  ],
+  [
+   "Identity policy",
+   "Identity-based policy",
+   "Policy attached to a user, group, or role that says what it may do."
+  ],
+  [
+   "Resource policy",
+   "Resource-based policy",
+   "Policy attached to a resource (S3 bucket, SQS queue, KMS key, Lambda) that says who may access it."
+  ],
+  [
+   "Permissions boundary",
+   "IAM permissions boundary",
+   "Sets the maximum permissions an identity can ever have; used to delegate role creation safely."
+  ],
+  [
+   "Explicit deny",
+   "Explicit Deny statement",
+   "A Deny in any applicable policy always overrides every Allow."
+  ],
+  [
+   "ABAC",
+   "Attribute-Based Access Control",
+   "Permissions based on tags, e.g. aws:ResourceTag equals aws:PrincipalTag."
+  ],
+  [
+   "External ID",
+   "sts:ExternalId",
+   "Secret value a third party must pass when assuming your role; prevents the confused deputy problem."
+  ],
+  [
+   "MFA",
+   "Multi-Factor Authentication",
+   "Second authentication factor; can be required in policies with aws:MultiFactorAuthPresent."
+  ],
+  [
+   "Root user",
+   "AWS account root user",
+   "Owner identity with full access; protect with MFA, no access keys, don't use day to day."
+  ],
+  [
+   "Organizations",
+   "AWS Organizations",
+   "Groups accounts into OUs with consolidated billing and central policies."
+  ],
+  [
+   "OU",
+   "Organizational Unit",
+   "Folder of accounts inside an organization where policies such as SCPs are attached."
+  ],
+  [
+   "SCP",
+   "Service Control Policy",
+   "Organization policy that caps the maximum permissions in member accounts; never grants."
+  ],
+  [
+   "RCP",
+   "Resource Control Policy",
+   "Organization policy that caps permissions on resources in member accounts, whoever calls."
+  ],
+  [
+   "Management account",
+   "Organizations management account",
+   "Account that owns the organization and pays the bill; SCPs don't restrict it."
+  ],
+  [
+   "Control Tower",
+   "AWS Control Tower",
+   "Sets up and governs a multi-account landing zone with guardrails and Account Factory."
+  ],
+  [
+   "Landing zone",
+   "Multi-account landing zone",
+   "Baseline multi-account environment: log archive, audit account, guardrails, networking."
+  ],
+  [
+   "Identity Center",
+   "AWS IAM Identity Center (formerly AWS SSO)",
+   "Single sign-on for workforce users across accounts, with permission sets."
+  ],
+  [
+   "Permission set",
+   "Identity Center permission set",
+   "Template of permissions assigned to users or groups in specific accounts."
+  ],
+  [
+   "SAML",
+   "Security Assertion Markup Language 2.0",
+   "Standard for federating corporate identity providers into AWS."
+  ],
+  [
+   "SCIM",
+   "System for Cross-domain Identity Management",
+   "Standard to provision users and groups automatically from an IdP."
+  ],
+  [
+   "IdP",
+   "Identity Provider",
+   "System that authenticates users (Entra ID, Okta, Google) and federates them into AWS."
+  ],
+  [
+   "Cognito user pool",
+   "Amazon Cognito user pool",
+   "User directory for app sign-up and sign-in, issuing JWTs."
+  ],
+  [
+   "Cognito identity pool",
+   "Amazon Cognito identity pool",
+   "Exchanges app or social logins for temporary AWS credentials."
+  ],
+  [
+   "Roles Anywhere",
+   "IAM Roles Anywhere",
+   "Gives temporary IAM credentials to workloads outside AWS using X.509 certificates."
+  ],
+  [
+   "Access Analyzer",
+   "IAM Access Analyzer",
+   "Finds resources shared outside your account or org, and generates least-privilege policies."
+  ],
+  [
+   "RAM",
+   "AWS Resource Access Manager",
+   "Shares resources (subnets, Transit Gateways, etc.) with other accounts."
+  ],
+  [
+   "AD Connector",
+   "AWS Directory Service AD Connector",
+   "Proxy that redirects directory requests to your on-premises Active Directory; caches nothing."
+  ],
+  [
+   "Managed Microsoft AD",
+   "AWS Directory Service for Microsoft Active Directory",
+   "Real, managed Active Directory in AWS; supports trusts with on-premises AD."
+  ],
+  [
+   "Simple AD",
+   "AWS Directory Service Simple AD",
+   "Low-cost, Samba-based standalone directory; no trusts."
+  ],
+  [
+   "aws:PrincipalOrgID",
+   "Organization ID condition key",
+   "Allows access to every principal in your organization in a resource policy."
+  ],
+  [
+   "Organization trail",
+   "CloudTrail organization trail",
+   "One CloudTrail trail that logs every account in the organization."
+  ],
+  [
+   "IMDSv2",
+   "Instance Metadata Service version 2",
+   "Session-token-based metadata access that protects role credentials from SSRF."
+  ]
+ ],
+ "2": [
+  [
+   "VPC",
+   "Virtual Private Cloud",
+   "Your isolated network in a Region with your own IP ranges."
+  ],
+  [
+   "CIDR",
+   "Classless Inter-Domain Routing",
+   "Notation for IP ranges such as 10.0.0.0/16; AWS reserves 5 IPs per subnet."
+  ],
+  [
+   "Subnet",
+   "VPC subnet",
+   "IP range inside one AZ; public if its route table points to an internet gateway."
+  ],
+  [
+   "AZ",
+   "Availability Zone",
+   "One or more isolated data centers in a Region; the unit of high availability."
+  ],
+  [
+   "Route table",
+   "VPC route table",
+   "Rules that decide where traffic from a subnet goes."
+  ],
+  [
+   "IGW",
+   "Internet Gateway",
+   "Lets a VPC reach the internet; one per VPC."
+  ],
+  [
+   "NAT GW",
+   "NAT Gateway",
+   "Managed outbound internet for private subnets (IPv4); zonal, deploy one per AZ for HA."
+  ],
+  [
+   "NAT instance",
+   "NAT instance",
+   "Self-managed EC2 doing NAT; needs source/destination check disabled."
+  ],
+  [
+   "EIGW",
+   "Egress-Only Internet Gateway",
+   "Outbound-only internet access for IPv6."
+  ],
+  [
+   "EIP",
+   "Elastic IP address",
+   "Static public IPv4 address you own and can remap."
+  ],
+  [
+   "SG",
+   "Security Group",
+   "Stateful, allow-only firewall on ENIs; can reference other SGs."
+  ],
+  [
+   "NACL",
+   "Network Access Control List",
+   "Stateless subnet firewall with numbered allow and deny rules."
+  ],
+  [
+   "Ephemeral ports",
+   "Ephemeral port range (1024–65535)",
+   "Client ports for return traffic; must be allowed in stateless NACLs."
+  ],
+  [
+   "ENI",
+   "Elastic Network Interface",
+   "Virtual network card with private IPs and security groups."
+  ],
+  [
+   "Gateway endpoint",
+   "VPC gateway endpoint",
+   "Free route-table target for S3 and DynamoDB from inside a VPC."
+  ],
+  [
+   "Interface endpoint",
+   "VPC interface endpoint (PrivateLink)",
+   "ENI with private IP to reach AWS or partner services privately; billed per hour and GB."
+  ],
+  [
+   "PrivateLink",
+   "AWS PrivateLink",
+   "Exposes a service privately to other VPCs through an NLB, one-way, works with overlapping CIDRs."
+  ],
+  [
+   "Endpoint policy",
+   "VPC endpoint policy",
+   "Resource policy on an endpoint limiting what can be accessed through it."
+  ],
+  [
+   "VPC peering",
+   "VPC peering connection",
+   "Private link between two VPCs; no transitive routing, no overlapping CIDRs."
+  ],
+  [
+   "TGW",
+   "AWS Transit Gateway",
+   "Regional hub router connecting many VPCs, VPNs, and Direct Connect."
+  ],
+  [
+   "VGW",
+   "Virtual Private Gateway",
+   "AWS-side VPN or Direct Connect endpoint attached to one VPC."
+  ],
+  [
+   "CGW",
+   "Customer Gateway",
+   "Your on-premises VPN device, as represented in AWS."
+  ],
+  [
+   "S2S VPN",
+   "AWS Site-to-Site VPN",
+   "IPsec tunnels over the internet between your network and AWS; two tunnels per connection."
+  ],
+  [
+   "Client VPN",
+   "AWS Client VPN",
+   "Managed OpenVPN-based access for individual users."
+  ],
+  [
+   "DX",
+   "AWS Direct Connect",
+   "Dedicated private physical connection to AWS; consistent performance, not encrypted by default."
+  ],
+  [
+   "VIF",
+   "Virtual Interface (private, public, transit)",
+   "Logical connection over Direct Connect to a VPC, public services, or a Transit Gateway."
+  ],
+  [
+   "DXGW",
+   "Direct Connect Gateway",
+   "Global resource connecting one DX to VPCs in many Regions."
+  ],
+  [
+   "LAG",
+   "Link Aggregation Group",
+   "Bundles several DX connections into one logical link."
+  ],
+  [
+   "MACsec",
+   "IEEE 802.1AE MAC Security",
+   "Layer 2 encryption available on some dedicated DX connections."
+  ],
+  [
+   "Route 53",
+   "Amazon Route 53",
+   "Managed DNS with health checks and routing policies."
+  ],
+  [
+   "Alias record",
+   "Route 53 alias record",
+   "Route 53 extension pointing to AWS resources; works at the zone apex; free queries."
+  ],
+  [
+   "Failover routing",
+   "Route 53 failover routing policy",
+   "Active-passive: answer with the secondary when the primary's health check fails."
+  ],
+  [
+   "Latency routing",
+   "Route 53 latency-based routing",
+   "Send users to the Region with the lowest latency."
+  ],
+  [
+   "Geolocation routing",
+   "Route 53 geolocation routing",
+   "Route by the user's country or continent; guarantees location-based answers."
+  ],
+  [
+   "Geoproximity routing",
+   "Route 53 geoproximity routing",
+   "Route by distance, adjustable with a bias."
+  ],
+  [
+   "Weighted routing",
+   "Route 53 weighted routing",
+   "Split traffic by percentage (canary, blue/green)."
+  ],
+  [
+   "Multivalue answer",
+   "Route 53 multivalue answer routing",
+   "Return up to 8 healthy records at random."
+  ],
+  [
+   "PHZ",
+   "Private Hosted Zone",
+   "DNS zone visible only inside associated VPCs."
+  ],
+  [
+   "Resolver endpoints",
+   "Route 53 Resolver inbound/outbound endpoints",
+   "Hybrid DNS: inbound for on-prem → AWS queries, outbound for AWS → on-prem."
+  ],
+  [
+   "Flow Logs",
+   "VPC Flow Logs",
+   "Metadata of accepted and rejected traffic (IPs, ports, action), no payload."
+  ],
+  [
+   "Traffic Mirroring",
+   "VPC Traffic Mirroring",
+   "Copies full packets from ENIs to inspection appliances."
+  ],
+  [
+   "Network Firewall",
+   "AWS Network Firewall",
+   "Managed stateful firewall with IPS and domain-name filtering."
+  ],
+  [
+   "GWLB",
+   "Gateway Load Balancer",
+   "Inserts third-party virtual appliances transparently into traffic using GENEVE."
+  ],
+  [
+   "Session Manager",
+   "AWS Systems Manager Session Manager",
+   "Shell access to instances without SSH, bastions, or inbound ports; sessions logged."
+  ],
+  [
+   "VPC sharing",
+   "VPC sharing with RAM",
+   "Other accounts launch resources into subnets owned by a central account."
+  ],
+  [
+   "Accelerated VPN",
+   "Accelerated Site-to-Site VPN",
+   "VPN entering the AWS network at the nearest edge via Global Accelerator; needs a TGW."
+  ]
+ ],
+ "3": [
+  [
+   "EC2",
+   "Amazon Elastic Compute Cloud",
+   "Virtual servers in the cloud."
+  ],
+  [
+   "AMI",
+   "Amazon Machine Image",
+   "Template (OS + software) to launch instances; Regional, copy it to use elsewhere."
+  ],
+  [
+   "Launch template",
+   "EC2 launch template",
+   "Versioned launch settings used by Auto Scaling and fleets."
+  ],
+  [
+   "User data",
+   "EC2 user data",
+   "Script that runs at first boot of an instance."
+  ],
+  [
+   "On-Demand",
+   "On-Demand Instances",
+   "Pay per second, no commitment."
+  ],
+  [
+   "RI",
+   "Reserved Instances",
+   "1- or 3-year commitment for a discount; Standard or Convertible."
+  ],
+  [
+   "Savings Plans",
+   "Compute or EC2 Instance Savings Plans",
+   "$/hour commitment for 1 or 3 years; Compute SP also covers Fargate and Lambda."
+  ],
+  [
+   "Spot",
+   "Spot Instances",
+   "Spare capacity at up to 90% off; can be reclaimed with a 2-minute notice."
+  ],
+  [
+   "Dedicated Host",
+   "EC2 Dedicated Host",
+   "Physical server for you; socket and core visibility for BYOL licensing."
+  ],
+  [
+   "Dedicated Instance",
+   "EC2 Dedicated Instance",
+   "Instance on hardware dedicated to your account, without host-level control."
+  ],
+  [
+   "ODCR",
+   "On-Demand Capacity Reservation",
+   "Reserves capacity in a specific AZ with no term commitment."
+  ],
+  [
+   "Cluster PG",
+   "Cluster placement group",
+   "Packs instances close in one AZ for lowest latency (HPC)."
+  ],
+  [
+   "Spread PG",
+   "Spread placement group",
+   "Each instance on distinct hardware; max 7 per AZ."
+  ],
+  [
+   "Partition PG",
+   "Partition placement group",
+   "Partitions on separate racks for large distributed systems (Kafka, Cassandra, HDFS)."
+  ],
+  [
+   "EFA",
+   "Elastic Fabric Adapter",
+   "Network interface with OS-bypass for HPC and MPI."
+  ],
+  [
+   "Hibernation",
+   "EC2 hibernation",
+   "Saves RAM to the encrypted EBS root volume and resumes on start."
+  ],
+  [
+   "Graviton",
+   "AWS Graviton",
+   "AWS Arm-based processors with better price-performance."
+  ],
+  [
+   "ASG",
+   "Amazon EC2 Auto Scaling group",
+   "Keeps a desired number of healthy instances and scales them."
+  ],
+  [
+   "Target tracking",
+   "Target tracking scaling policy",
+   "Keeps a metric at a target value, like a thermostat."
+  ],
+  [
+   "Step scaling",
+   "Step scaling policy",
+   "Adds or removes capacity in steps based on alarm breach size."
+  ],
+  [
+   "Scheduled scaling",
+   "Scheduled scaling action",
+   "Changes capacity at set times."
+  ],
+  [
+   "Predictive scaling",
+   "Predictive scaling policy",
+   "Forecasts load from history and scales ahead of time."
+  ],
+  [
+   "Warm pool",
+   "Auto Scaling warm pool",
+   "Pre-initialized stopped or running instances for fast scale-out."
+  ],
+  [
+   "Lifecycle hook",
+   "Auto Scaling lifecycle hook",
+   "Pauses launch or termination to run custom actions."
+  ],
+  [
+   "Instance refresh",
+   "Auto Scaling instance refresh",
+   "Rolling replacement of instances with min healthy % and rollback."
+  ],
+  [
+   "ELB",
+   "Elastic Load Balancing",
+   "Family of managed load balancers: ALB, NLB, GWLB."
+  ],
+  [
+   "ALB",
+   "Application Load Balancer",
+   "Layer 7 HTTP/HTTPS with path, host, and header routing."
+  ],
+  [
+   "NLB",
+   "Network Load Balancer",
+   "Layer 4 TCP/UDP/TLS, ultra-low latency, static IP per AZ."
+  ],
+  [
+   "Target group",
+   "ELB target group",
+   "Set of targets (instances, IPs, Lambda) with health checks."
+  ],
+  [
+   "Sticky sessions",
+   "Session affinity",
+   "Cookie-based routing of a user to the same target."
+  ],
+  [
+   "Deregistration delay",
+   "Connection draining",
+   "Time to let in-flight requests finish when a target is removed."
+  ],
+  [
+   "SNI",
+   "Server Name Indication",
+   "Lets one HTTPS listener serve multiple certificates."
+  ],
+  [
+   "Lambda",
+   "AWS Lambda",
+   "Run code on events without servers; max 15 minutes per invocation."
+  ],
+  [
+   "Provisioned concurrency",
+   "Lambda provisioned concurrency",
+   "Pre-initialized environments to avoid cold starts."
+  ],
+  [
+   "Reserved concurrency",
+   "Lambda reserved concurrency",
+   "Guarantees and caps a function's concurrent executions."
+  ],
+  [
+   "Function URL",
+   "Lambda function URL",
+   "Built-in HTTPS endpoint for one function."
+  ],
+  [
+   "ECS",
+   "Amazon Elastic Container Service",
+   "AWS-native container orchestration."
+  ],
+  [
+   "EKS",
+   "Amazon Elastic Kubernetes Service",
+   "Managed Kubernetes."
+  ],
+  [
+   "Fargate",
+   "AWS Fargate",
+   "Serverless compute for ECS and EKS: no instances to manage."
+  ],
+  [
+   "Task role",
+   "ECS task role",
+   "IAM role your container code uses."
+  ],
+  [
+   "Execution role",
+   "ECS task execution role",
+   "IAM role the ECS agent uses to pull images and send logs."
+  ],
+  [
+   "ECR",
+   "Amazon Elastic Container Registry",
+   "Managed Docker/OCI image registry."
+  ],
+  [
+   "Batch",
+   "AWS Batch",
+   "Managed job queues and compute for batch workloads."
+  ],
+  [
+   "Beanstalk",
+   "AWS Elastic Beanstalk",
+   "PaaS: upload code, AWS provisions and manages the stack."
+  ],
+  [
+   "App Runner",
+   "AWS App Runner",
+   "Runs web services from source or a container image with zero infra config."
+  ],
+  [
+   "Compute Optimizer",
+   "AWS Compute Optimizer",
+   "Right-sizing recommendations from utilization."
+  ],
+  [
+   "Local Zones",
+   "AWS Local Zones",
+   "AWS infrastructure in metro areas for single-digit ms latency to users."
+  ],
+  [
+   "Outposts",
+   "AWS Outposts",
+   "AWS racks or servers in your own data center."
+  ],
+  [
+   "Wavelength",
+   "AWS Wavelength",
+   "AWS compute inside 5G telecom networks for mobile edge."
+  ]
+ ],
+ "4": [
+  [
+   "S3",
+   "Amazon Simple Storage Service",
+   "Object storage with 11 nines of durability."
+  ],
+  [
+   "S3 Standard",
+   "S3 Standard",
+   "Frequently accessed data, multi-AZ, no retrieval fees."
+  ],
+  [
+   "S3 Standard-IA",
+   "S3 Standard-Infrequent Access",
+   "Cheaper storage, retrieval fee, 30-day and 128 KB minimums."
+  ],
+  [
+   "S3 One Zone-IA",
+   "S3 One Zone-Infrequent Access",
+   "Single-AZ infrequent access for re-creatable data."
+  ],
+  [
+   "S3 Intelligent-Tiering",
+   "S3 Intelligent-Tiering",
+   "Moves objects between tiers automatically; for unknown access patterns."
+  ],
+  [
+   "Glacier IR",
+   "S3 Glacier Instant Retrieval",
+   "Archive pricing with millisecond access (about quarterly access)."
+  ],
+  [
+   "Glacier FR",
+   "S3 Glacier Flexible Retrieval",
+   "Archive with retrieval in minutes to hours."
+  ],
+  [
+   "Deep Archive",
+   "S3 Glacier Deep Archive",
+   "Cheapest storage; retrieval within 12–48 hours; 180-day minimum."
+  ],
+  [
+   "Lifecycle",
+   "S3 Lifecycle configuration",
+   "Rules to transition or expire objects over time."
+  ],
+  [
+   "Versioning",
+   "S3 Versioning",
+   "Keeps every version of an object; protects from overwrites and deletes."
+  ],
+  [
+   "MFA Delete",
+   "S3 MFA Delete",
+   "Requires MFA to permanently delete versions or change versioning."
+  ],
+  [
+   "Object Lock",
+   "S3 Object Lock",
+   "WORM retention; compliance mode can't be bypassed even by root."
+  ],
+  [
+   "CRR / SRR",
+   "Cross-Region / Same-Region Replication",
+   "Asynchronous replication of new objects; needs versioning."
+  ],
+  [
+   "Batch Replication",
+   "S3 Batch Replication",
+   "Replicates existing or previously failed objects."
+  ],
+  [
+   "SSE-S3",
+   "Server-Side Encryption with S3 managed keys",
+   "Default encryption with keys managed by S3."
+  ],
+  [
+   "SSE-KMS",
+   "Server-Side Encryption with AWS KMS keys",
+   "Encryption with KMS keys you control and audit."
+  ],
+  [
+   "DSSE-KMS",
+   "Dual-layer SSE with KMS",
+   "Two layers of encryption for strict compliance."
+  ],
+  [
+   "SSE-C",
+   "Server-Side Encryption with Customer-provided keys",
+   "You send the key with each request; AWS doesn't store it."
+  ],
+  [
+   "Bucket Key",
+   "S3 Bucket Key",
+   "Reduces KMS request costs for SSE-KMS."
+  ],
+  [
+   "Presigned URL",
+   "S3 presigned URL",
+   "Time-limited access to a private object."
+  ],
+  [
+   "Transfer Acceleration",
+   "S3 Transfer Acceleration",
+   "Faster long-distance uploads through CloudFront edges."
+  ],
+  [
+   "Multipart upload",
+   "S3 multipart upload",
+   "Parallel parts for large objects; recommended above 100 MB."
+  ],
+  [
+   "Byte-range fetch",
+   "S3 byte-range GET",
+   "Download only part of an object."
+  ],
+  [
+   "OAC",
+   "CloudFront Origin Access Control",
+   "Lets only CloudFront read a private S3 bucket."
+  ],
+  [
+   "Block Public Access",
+   "S3 Block Public Access",
+   "Account or bucket setting that overrides anything granting public access."
+  ],
+  [
+   "Object Ownership",
+   "S3 Object Ownership",
+   "'Bucket owner enforced' disables ACLs; the bucket owner owns all objects."
+  ],
+  [
+   "Access Points",
+   "S3 Access Points",
+   "Named endpoints with their own policy per app or team."
+  ],
+  [
+   "Requester Pays",
+   "S3 Requester Pays",
+   "The requester pays for requests and data transfer."
+  ],
+  [
+   "Storage Lens",
+   "Amazon S3 Storage Lens",
+   "Org-wide S3 usage and activity analytics."
+  ],
+  [
+   "EBS",
+   "Amazon Elastic Block Store",
+   "Block volumes for EC2, tied to one AZ."
+  ],
+  [
+   "gp3",
+   "EBS General Purpose SSD gp3",
+   "Default SSD; IOPS and throughput set independently of size."
+  ],
+  [
+   "io2",
+   "EBS Provisioned IOPS SSD io2 (Block Express)",
+   "Highest IOPS, sub-ms latency, 99.999% durability; supports Multi-Attach."
+  ],
+  [
+   "st1",
+   "EBS Throughput Optimized HDD",
+   "Cheap, high-throughput sequential workloads."
+  ],
+  [
+   "sc1",
+   "EBS Cold HDD",
+   "Lowest cost for infrequently accessed data."
+  ],
+  [
+   "Snapshot",
+   "EBS snapshot",
+   "Incremental, Regional backup of a volume, stored in S3."
+  ],
+  [
+   "FSR",
+   "EBS Fast Snapshot Restore",
+   "Volumes restored from a snapshot get full performance immediately."
+  ],
+  [
+   "DLM",
+   "Amazon Data Lifecycle Manager",
+   "Automates EBS snapshot and AMI creation and retention."
+  ],
+  [
+   "Instance store",
+   "EC2 instance store",
+   "Local ephemeral disk with very high IOPS; data lost on stop."
+  ],
+  [
+   "EFS",
+   "Amazon Elastic File System",
+   "Managed elastic NFS for Linux, multi-AZ, shared."
+  ],
+  [
+   "FSx for Windows",
+   "Amazon FSx for Windows File Server",
+   "Managed Windows SMB file system with AD and NTFS ACLs."
+  ],
+  [
+   "FSx for Lustre",
+   "Amazon FSx for Lustre",
+   "High-performance file system for HPC and ML, linked to S3."
+  ],
+  [
+   "FSx for ONTAP",
+   "Amazon FSx for NetApp ONTAP",
+   "Managed ONTAP: NFS + SMB + iSCSI, snapshots, SnapMirror."
+  ],
+  [
+   "FSx for OpenZFS",
+   "Amazon FSx for OpenZFS",
+   "Managed ZFS file system over NFS."
+  ],
+  [
+   "Storage Gateway",
+   "AWS Storage Gateway",
+   "Hybrid storage: File, Volume, and Tape gateways."
+  ],
+  [
+   "S3 File Gateway",
+   "Amazon S3 File Gateway",
+   "NFS/SMB on premises, stored as objects in S3, with local cache."
+  ],
+  [
+   "Volume Gateway",
+   "Storage Gateway Volume Gateway",
+   "iSCSI volumes; cached (primary in AWS) or stored (primary on premises)."
+  ],
+  [
+   "Tape Gateway",
+   "Storage Gateway Tape Gateway",
+   "Virtual tape library backed by S3 and Glacier."
+  ],
+  [
+   "DataSync",
+   "AWS DataSync",
+   "Online transfer to S3, EFS, FSx with validation and scheduling."
+  ],
+  [
+   "Transfer Family",
+   "AWS Transfer Family",
+   "Managed SFTP, FTPS, FTP, and AS2 into S3 or EFS."
+  ],
+  [
+   "Snowball Edge",
+   "AWS Snowball Edge",
+   "Rugged device for offline bulk transfer and edge compute."
+  ],
+  [
+   "AWS Backup",
+   "AWS Backup",
+   "Central backup policies across services and accounts."
+  ],
+  [
+   "Vault Lock",
+   "AWS Backup Vault Lock",
+   "Makes backups immutable (WORM)."
+  ]
+ ],
+ "5": [
+  [
+   "RDS",
+   "Amazon Relational Database Service",
+   "Managed MySQL, PostgreSQL, MariaDB, Oracle, SQL Server, Db2."
+  ],
+  [
+   "Multi-AZ instance",
+   "RDS Multi-AZ DB instance deployment",
+   "Synchronous standby in another AZ; automatic failover; standby not readable."
+  ],
+  [
+   "Multi-AZ cluster",
+   "RDS Multi-AZ DB cluster",
+   "Writer + two readable standbys; faster failover."
+  ],
+  [
+   "Read replica",
+   "RDS read replica",
+   "Asynchronous copy for reads or DR; can be cross-Region and promoted."
+  ],
+  [
+   "PITR",
+   "Point-in-time recovery",
+   "Restore to any second within the backup retention window (up to 35 days)."
+  ],
+  [
+   "RDS Proxy",
+   "Amazon RDS Proxy",
+   "Pools database connections; faster failover; good for Lambda."
+  ],
+  [
+   "IAM DB auth",
+   "IAM database authentication",
+   "Connect to RDS or Aurora with 15-minute IAM tokens instead of passwords."
+  ],
+  [
+   "Aurora",
+   "Amazon Aurora",
+   "Cloud-native MySQL/PostgreSQL; 6 copies across 3 AZs; up to 15 replicas."
+  ],
+  [
+   "Reader endpoint",
+   "Aurora reader endpoint",
+   "Load-balances read connections across Aurora Replicas."
+  ],
+  [
+   "Aurora Serverless v2",
+   "Amazon Aurora Serverless v2",
+   "Scales capacity automatically in fine-grained increments."
+  ],
+  [
+   "Global Database",
+   "Amazon Aurora Global Database",
+   "Cross-Region replication under ~1 s; promote in about a minute."
+  ],
+  [
+   "Backtrack",
+   "Aurora Backtrack",
+   "Rewinds an Aurora MySQL cluster in place to an earlier time."
+  ],
+  [
+   "Cloning",
+   "Aurora cloning",
+   "Fast copy-on-write copy of a cluster."
+  ],
+  [
+   "Zero-ETL",
+   "Aurora/RDS zero-ETL integration",
+   "Replicates data to Redshift in seconds without pipelines."
+  ],
+  [
+   "DynamoDB",
+   "Amazon DynamoDB",
+   "Serverless key-value and document database with single-digit ms latency."
+  ],
+  [
+   "On-demand mode",
+   "DynamoDB on-demand capacity",
+   "Pay per request; scales instantly; for unpredictable traffic."
+  ],
+  [
+   "Provisioned mode",
+   "DynamoDB provisioned capacity",
+   "Set RCUs/WCUs (with auto scaling); cheaper for steady traffic."
+  ],
+  [
+   "RCU / WCU",
+   "Read / Write Capacity Units",
+   "Throughput units of provisioned DynamoDB tables."
+  ],
+  [
+   "GSI",
+   "Global Secondary Index",
+   "Index with a different partition key; query any attribute."
+  ],
+  [
+   "LSI",
+   "Local Secondary Index",
+   "Same partition key, different sort key; created with the table."
+  ],
+  [
+   "DAX",
+   "DynamoDB Accelerator",
+   "In-memory cache for DynamoDB with microsecond reads."
+  ],
+  [
+   "Global tables",
+   "DynamoDB global tables",
+   "Multi-Region, multi-active replication."
+  ],
+  [
+   "Streams",
+   "DynamoDB Streams",
+   "Ordered change log of item modifications; triggers Lambda."
+  ],
+  [
+   "TTL",
+   "DynamoDB Time to Live",
+   "Deletes expired items automatically at no cost."
+  ],
+  [
+   "ElastiCache",
+   "Amazon ElastiCache",
+   "Managed in-memory cache: Redis OSS, Valkey, Memcached."
+  ],
+  [
+   "Redis / Valkey",
+   "ElastiCache for Redis OSS / Valkey",
+   "Rich data structures, replication, Multi-AZ failover, persistence."
+  ],
+  [
+   "Memcached",
+   "ElastiCache for Memcached",
+   "Simple, multithreaded cache; no replication or persistence."
+  ],
+  [
+   "MemoryDB",
+   "Amazon MemoryDB",
+   "Durable Redis/Valkey-compatible primary database."
+  ],
+  [
+   "Redshift",
+   "Amazon Redshift",
+   "Columnar MPP data warehouse for analytics (OLAP)."
+  ],
+  [
+   "Spectrum",
+   "Amazon Redshift Spectrum",
+   "Query data in S3 from Redshift without loading it."
+  ],
+  [
+   "DocumentDB",
+   "Amazon DocumentDB",
+   "Managed MongoDB-compatible document database."
+  ],
+  [
+   "Neptune",
+   "Amazon Neptune",
+   "Managed graph database."
+  ],
+  [
+   "Keyspaces",
+   "Amazon Keyspaces",
+   "Serverless Apache Cassandra-compatible database."
+  ],
+  [
+   "Timestream",
+   "Amazon Timestream",
+   "Time-series database."
+  ],
+  [
+   "OpenSearch",
+   "Amazon OpenSearch Service",
+   "Search, log analytics, and dashboards."
+  ],
+  [
+   "DMS",
+   "AWS Database Migration Service",
+   "Migrates and replicates data between databases (full load + CDC)."
+  ],
+  [
+   "SCT",
+   "AWS Schema Conversion Tool",
+   "Converts schemas and code between database engines."
+  ],
+  [
+   "CDC",
+   "Change Data Capture",
+   "Continuous replication of ongoing changes."
+  ],
+  [
+   "OLTP / OLAP",
+   "Online Transaction / Analytical Processing",
+   "Transactional workloads (RDS, DynamoDB) vs analytics (Redshift)."
+  ]
+ ],
+ "6": [
+  [
+   "SQS",
+   "Amazon Simple Queue Service",
+   "Managed message queue that decouples producers and consumers."
+  ],
+  [
+   "Standard queue",
+   "SQS standard queue",
+   "Nearly unlimited throughput, at-least-once, best-effort order."
+  ],
+  [
+   "FIFO queue",
+   "SQS FIFO queue",
+   "Strict order per message group and exactly-once processing."
+  ],
+  [
+   "Message group ID",
+   "SQS FIFO message group ID",
+   "Ordering scope inside a FIFO queue; different groups process in parallel."
+  ],
+  [
+   "Deduplication ID",
+   "SQS message deduplication ID",
+   "Drops duplicates sent within 5 minutes in FIFO queues."
+  ],
+  [
+   "Visibility timeout",
+   "SQS visibility timeout",
+   "Time a received message stays hidden; set above processing time."
+  ],
+  [
+   "Long polling",
+   "SQS long polling",
+   "Waits up to 20 s for messages; fewer empty responses."
+  ],
+  [
+   "DLQ",
+   "Dead-Letter Queue",
+   "Receives messages that fail repeatedly (maxReceiveCount)."
+  ],
+  [
+   "Delay queue",
+   "SQS delay queue",
+   "Hides new messages for up to 15 minutes."
+  ],
+  [
+   "Extended Client",
+   "SQS Extended Client Library",
+   "Stores large payloads in S3 and sends a pointer."
+  ],
+  [
+   "Backlog per instance",
+   "Queue backlog per instance metric",
+   "Visible messages ÷ workers; the right metric for scaling queue workers."
+  ],
+  [
+   "SNS",
+   "Amazon Simple Notification Service",
+   "Pub/sub push messaging to many subscribers."
+  ],
+  [
+   "Fan-out",
+   "SNS-to-SQS fan-out",
+   "One SNS topic delivers a copy to several SQS queues."
+  ],
+  [
+   "Filter policy",
+   "SNS subscription filter policy",
+   "Delivers only matching messages to a subscriber."
+  ],
+  [
+   "EventBridge",
+   "Amazon EventBridge",
+   "Serverless event bus with rules, AWS and SaaS events, many targets."
+  ],
+  [
+   "Scheduler",
+   "Amazon EventBridge Scheduler",
+   "Serverless cron and one-time schedules."
+  ],
+  [
+   "Archive & replay",
+   "EventBridge archive and replay",
+   "Stores events and re-sends them to the bus."
+  ],
+  [
+   "Pipes",
+   "Amazon EventBridge Pipes",
+   "Point-to-point source → filter/enrich → target integration."
+  ],
+  [
+   "API destinations",
+   "EventBridge API destinations",
+   "Sends events to external HTTPS endpoints."
+  ],
+  [
+   "KDS",
+   "Amazon Kinesis Data Streams",
+   "Real-time ordered data stream with shards, replay, many consumers."
+  ],
+  [
+   "Shard",
+   "Kinesis shard",
+   "Unit of capacity: 1 MB/s in, 2 MB/s out; order per partition key."
+  ],
+  [
+   "Enhanced fan-out",
+   "Kinesis enhanced fan-out",
+   "Dedicated 2 MB/s per shard for each consumer."
+  ],
+  [
+   "Firehose",
+   "Amazon Data Firehose",
+   "Managed delivery of streams to S3, Redshift, OpenSearch, with conversion."
+  ],
+  [
+   "Managed Flink",
+   "Amazon Managed Service for Apache Flink",
+   "Real-time stream processing with windows and state."
+  ],
+  [
+   "MSK",
+   "Amazon Managed Streaming for Apache Kafka",
+   "Managed Apache Kafka."
+  ],
+  [
+   "Amazon MQ",
+   "Amazon MQ",
+   "Managed ActiveMQ and RabbitMQ (JMS, AMQP, MQTT)."
+  ],
+  [
+   "Step Functions",
+   "AWS Step Functions",
+   "Serverless workflow orchestration with retries and error handling."
+  ],
+  [
+   "Standard workflow",
+   "Step Functions Standard Workflow",
+   "Long-running (up to a year), exactly-once, auditable."
+  ],
+  [
+   "Express workflow",
+   "Step Functions Express Workflow",
+   "High-volume, short (up to 5 minutes) executions."
+  ],
+  [
+   "Task token",
+   "Step Functions callback with task token",
+   "Pauses a workflow until an external system or person responds."
+  ],
+  [
+   "API Gateway",
+   "Amazon API Gateway",
+   "Managed APIs: REST, HTTP, and WebSocket."
+  ],
+  [
+   "REST API",
+   "API Gateway REST API",
+   "Full features: usage plans, API keys, caching, validation."
+  ],
+  [
+   "HTTP API",
+   "API Gateway HTTP API",
+   "Cheaper, faster, JWT authorizers; fewer features."
+  ],
+  [
+   "WebSocket API",
+   "API Gateway WebSocket API",
+   "Two-way persistent connections; server push."
+  ],
+  [
+   "Usage plan",
+   "API Gateway usage plan",
+   "Throttling and quotas per API key."
+  ],
+  [
+   "Private API",
+   "API Gateway private endpoint",
+   "API reachable only through an interface VPC endpoint."
+  ],
+  [
+   "Edge-optimized",
+   "API Gateway edge-optimized endpoint",
+   "Public API served through CloudFront edges."
+  ],
+  [
+   "AppSync",
+   "AWS AppSync",
+   "Managed GraphQL with multiple data sources and real-time subscriptions."
+  ],
+  [
+   "Idempotency",
+   "Idempotent processing",
+   "Processing a message twice has the same effect as once."
+  ]
+ ],
+ "7": [
+  [
+   "KMS",
+   "AWS Key Management Service",
+   "Managed encryption keys with policies, rotation, and audit."
+  ],
+  [
+   "CMK",
+   "Customer managed key",
+   "KMS key you create and control (policy, rotation, disabling)."
+  ],
+  [
+   "AWS managed key",
+   "AWS managed KMS key",
+   "Key a service creates for you (aws/s3, aws/ebs); limited control."
+  ],
+  [
+   "Key policy",
+   "KMS key policy",
+   "Resource policy that controls who can use and manage a key."
+  ],
+  [
+   "Grant",
+   "KMS grant",
+   "Temporary, programmatic delegation of key use."
+  ],
+  [
+   "Envelope encryption",
+   "Envelope encryption",
+   "Encrypt data with a data key; encrypt the data key with KMS."
+  ],
+  [
+   "Data key",
+   "KMS data key (GenerateDataKey)",
+   "Key used locally to encrypt large data."
+  ],
+  [
+   "Multi-Region key",
+   "KMS multi-Region key",
+   "Same key material and ID in several Regions."
+  ],
+  [
+   "kms:ViaService",
+   "KMS ViaService condition key",
+   "Restricts a key to requests made through a specific AWS service."
+  ],
+  [
+   "CloudHSM",
+   "AWS CloudHSM",
+   "Dedicated single-tenant FIPS 140-2 Level 3 HSMs you control."
+  ],
+  [
+   "Secrets Manager",
+   "AWS Secrets Manager",
+   "Stores secrets with automatic rotation (e.g. RDS credentials)."
+  ],
+  [
+   "Parameter Store",
+   "AWS Systems Manager Parameter Store",
+   "Config and secrets (SecureString); free standard tier; no rotation."
+  ],
+  [
+   "ACM",
+   "AWS Certificate Manager",
+   "Free public TLS certificates with auto-renewal; us-east-1 for CloudFront."
+  ],
+  [
+   "WAF",
+   "AWS WAF",
+   "Layer 7 web firewall: SQLi, XSS, rate-based, geo match rules."
+  ],
+  [
+   "Web ACL",
+   "WAF web access control list",
+   "Set of WAF rules attached to CloudFront, ALB, API Gateway, AppSync, Cognito."
+  ],
+  [
+   "Shield Standard",
+   "AWS Shield Standard",
+   "Free automatic layer 3/4 DDoS protection."
+  ],
+  [
+   "Shield Advanced",
+   "AWS Shield Advanced",
+   "Enhanced DDoS protection, response team, and cost protection."
+  ],
+  [
+   "SRT",
+   "Shield Response Team",
+   "AWS DDoS experts available with Shield Advanced."
+  ],
+  [
+   "Firewall Manager",
+   "AWS Firewall Manager",
+   "Central WAF, SG, Shield, and Network Firewall policies across accounts."
+  ],
+  [
+   "GuardDuty",
+   "Amazon GuardDuty",
+   "Threat detection from CloudTrail, VPC Flow Logs, DNS, and more."
+  ],
+  [
+   "Inspector",
+   "Amazon Inspector",
+   "Vulnerability scanning of EC2, ECR images, and Lambda."
+  ],
+  [
+   "Macie",
+   "Amazon Macie",
+   "Finds sensitive data (PII) in S3."
+  ],
+  [
+   "Detective",
+   "Amazon Detective",
+   "Investigates the root cause of security findings."
+  ],
+  [
+   "Security Hub",
+   "AWS Security Hub",
+   "Aggregates findings and checks against standards (CIS, FSBP)."
+  ],
+  [
+   "Config",
+   "AWS Config",
+   "Resource configuration history and compliance rules with remediation."
+  ],
+  [
+   "Conformance pack",
+   "AWS Config conformance pack",
+   "Bundle of Config rules and remediations deployed together."
+  ],
+  [
+   "CloudTrail",
+   "AWS CloudTrail",
+   "Logs API calls: who did what, when, from where."
+  ],
+  [
+   "Management events",
+   "CloudTrail management events",
+   "Control-plane operations (create, delete, modify resources)."
+  ],
+  [
+   "Data events",
+   "CloudTrail data events",
+   "Object-level and data-plane operations (S3 GetObject, Lambda Invoke)."
+  ],
+  [
+   "Log file validation",
+   "CloudTrail log file integrity validation",
+   "Signed digests prove logs weren't changed."
+  ],
+  [
+   "CloudTrail Lake",
+   "AWS CloudTrail Lake",
+   "Managed event store with SQL queries and long retention."
+  ],
+  [
+   "CloudWatch",
+   "Amazon CloudWatch",
+   "Metrics, alarms, logs, and dashboards."
+  ],
+  [
+   "CloudWatch agent",
+   "Amazon CloudWatch agent",
+   "Collects OS-level metrics (memory, disk) and logs."
+  ],
+  [
+   "Metric filter",
+   "CloudWatch Logs metric filter",
+   "Turns log patterns into metrics for alarms."
+  ],
+  [
+   "Logs Insights",
+   "CloudWatch Logs Insights",
+   "Interactive query language for logs."
+  ],
+  [
+   "Composite alarm",
+   "CloudWatch composite alarm",
+   "Combines alarms with AND/OR to reduce noise."
+  ],
+  [
+   "X-Ray",
+   "AWS X-Ray",
+   "Distributed tracing and service map."
+  ],
+  [
+   "Patch Manager",
+   "AWS Systems Manager Patch Manager",
+   "Automated patching with baselines and maintenance windows."
+  ],
+  [
+   "AWS Health",
+   "AWS Health",
+   "Events that affect your resources (maintenance, outages)."
+  ],
+  [
+   "Trusted Advisor",
+   "AWS Trusted Advisor",
+   "Best-practice checks: cost, security, limits, resilience, performance."
+  ],
+  [
+   "Artifact",
+   "AWS Artifact",
+   "Downloads AWS compliance reports (SOC, ISO, PCI)."
+  ],
+  [
+   "Audit Manager",
+   "AWS Audit Manager",
+   "Collects evidence about your AWS usage for audits."
+  ]
+ ],
+ "8": [
+  [
+   "RTO",
+   "Recovery Time Objective",
+   "Maximum acceptable time to restore service after a disaster."
+  ],
+  [
+   "RPO",
+   "Recovery Point Objective",
+   "Maximum acceptable data loss, measured in time."
+  ],
+  [
+   "Backup & restore",
+   "Backup and restore DR strategy",
+   "Cheapest; RTO/RPO in hours."
+  ],
+  [
+   "Pilot light",
+   "Pilot light DR strategy",
+   "Data replicated, core always on, rest provisioned during disaster; tens of minutes."
+  ],
+  [
+   "Warm standby",
+   "Warm standby DR strategy",
+   "Scaled-down full copy running; minutes of RTO."
+  ],
+  [
+   "Multi-site",
+   "Multi-site active-active DR strategy",
+   "Full capacity in several Regions; near-zero RTO; highest cost."
+  ],
+  [
+   "DRS",
+   "AWS Elastic Disaster Recovery",
+   "Continuous server replication; recovery instances in minutes."
+  ],
+  [
+   "MGN",
+   "AWS Application Migration Service",
+   "Lift-and-shift (rehost) servers to EC2."
+  ],
+  [
+   "7 Rs",
+   "Migration strategies",
+   "Retire, retain, rehost, relocate, repurchase, replatform, refactor."
+  ],
+  [
+   "CloudFront",
+   "Amazon CloudFront",
+   "CDN caching content at edge locations worldwide."
+  ],
+  [
+   "Origin group",
+   "CloudFront origin group",
+   "Automatic failover to a secondary origin."
+  ],
+  [
+   "Signed URL / cookie",
+   "CloudFront signed URLs and cookies",
+   "Restricted access: URL for one file, cookies for many."
+  ],
+  [
+   "CloudFront Functions",
+   "CloudFront Functions",
+   "Lightweight JS at the edge for headers, redirects, rewrites."
+  ],
+  [
+   "Lambda@Edge",
+   "Lambda@Edge",
+   "Heavier edge logic with network access and longer runtime."
+  ],
+  [
+   "Global Accelerator",
+   "AWS Global Accelerator",
+   "Two static anycast IPs over the AWS backbone; TCP/UDP; fast failover."
+  ],
+  [
+   "ARC",
+   "Amazon Route 53 Application Recovery Controller",
+   "Routing controls and readiness checks for Regional failover."
+  ],
+  [
+   "FIS",
+   "AWS Fault Injection Service",
+   "Controlled chaos experiments."
+  ],
+  [
+   "CloudFormation",
+   "AWS CloudFormation",
+   "Infrastructure as code with templates and stacks."
+  ],
+  [
+   "StackSets",
+   "CloudFormation StackSets",
+   "Deploy one stack to many accounts and Regions."
+  ],
+  [
+   "CDK",
+   "AWS Cloud Development Kit",
+   "Define infrastructure in programming languages; synthesizes CloudFormation."
+  ],
+  [
+   "IaC",
+   "Infrastructure as Code",
+   "Reproducible environments from versioned templates."
+  ],
+  [
+   "Cost Explorer",
+   "AWS Cost Explorer",
+   "Visualizes spend and recommends Savings Plans and RIs."
+  ],
+  [
+   "Budgets",
+   "AWS Budgets",
+   "Alerts (and actions) on actual or forecasted cost and usage."
+  ],
+  [
+   "Cost Anomaly Detection",
+   "AWS Cost Anomaly Detection",
+   "ML detection of unusual spend."
+  ],
+  [
+   "CUR",
+   "AWS Cost and Usage Report (Data Exports)",
+   "Most detailed line-item billing data in S3."
+  ],
+  [
+   "Cost allocation tags",
+   "Cost allocation tags",
+   "Tags activated to group costs by team or project."
+  ],
+  [
+   "Consolidated billing",
+   "Organizations consolidated billing",
+   "One bill, shared volume tiers, shared RIs and Savings Plans."
+  ],
+  [
+   "Data transfer",
+   "AWS data transfer pricing",
+   "Inbound free; out to internet and across AZs/Regions charged."
+  ],
+  [
+   "Athena",
+   "Amazon Athena",
+   "Serverless SQL over S3, priced per data scanned."
+  ],
+  [
+   "Parquet",
+   "Apache Parquet",
+   "Columnar file format that cuts Athena scan costs."
+  ],
+  [
+   "Partitioning",
+   "Data partitioning",
+   "Organizing S3 data by keys (e.g. date) so queries skip data."
+  ],
+  [
+   "Glue",
+   "AWS Glue",
+   "Crawlers, Data Catalog, and serverless ETL."
+  ],
+  [
+   "Data Catalog",
+   "AWS Glue Data Catalog",
+   "Central metadata store for Athena, EMR, Redshift Spectrum."
+  ],
+  [
+   "Lake Formation",
+   "AWS Lake Formation",
+   "Data lake governance with column- and row-level permissions."
+  ],
+  [
+   "EMR",
+   "Amazon EMR",
+   "Managed Spark, Hadoop, Hive, Presto clusters."
+  ],
+  [
+   "QuickSight",
+   "Amazon QuickSight",
+   "Serverless BI dashboards."
+  ],
+  [
+   "Rekognition",
+   "Amazon Rekognition",
+   "Image and video analysis, faces, moderation."
+  ],
+  [
+   "Textract",
+   "Amazon Textract",
+   "Extracts text, forms, and tables from documents."
+  ],
+  [
+   "Comprehend",
+   "Amazon Comprehend",
+   "NLP: sentiment, entities, key phrases, PII."
+  ],
+  [
+   "Transcribe",
+   "Amazon Transcribe",
+   "Speech to text."
+  ],
+  [
+   "Polly",
+   "Amazon Polly",
+   "Text to speech."
+  ],
+  [
+   "Translate",
+   "Amazon Translate",
+   "Machine translation."
+  ],
+  [
+   "Lex",
+   "Amazon Lex",
+   "Conversational chatbots with intents and slots."
+  ],
+  [
+   "Kendra",
+   "Amazon Kendra",
+   "Intelligent enterprise search across sources, permission-aware."
+  ],
+  [
+   "SageMaker",
+   "Amazon SageMaker AI",
+   "Build, train, and deploy custom ML models."
+  ],
+  [
+   "Bedrock",
+   "Amazon Bedrock",
+   "Foundation models through one API, with Knowledge Bases for RAG."
+  ],
+  [
+   "RAG",
+   "Retrieval-Augmented Generation",
+   "Grounding model answers in your own documents."
+  ]
+ ]
+}

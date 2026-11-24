@@ -1,0 +1,1245 @@
+[
+ {
+  "id": "iam-eval",
+  "b": 1,
+  "t": "How IAM decides: policy evaluation",
+  "s": "Every request is denied unless something allows it, and an explicit Deny anywhere beats every Allow.",
+  "p": [
+   "Order: explicit Deny → SCP/RCP limits → resource policy → identity policy → permissions boundary → session policy.",
+   "Effective permissions are the intersection of all the limits (SCP ∩ boundary ∩ identity), never the union.",
+   "Within one account, an Allow in either the identity policy or the resource policy is enough (unless something denies).",
+   "Cross-account needs both sides: the resource policy must trust the other account and the caller needs its own IAM Allow."
+  ],
+  "tip": "If an answer says one policy type 'takes precedence', it's wrong. Look for an explicit Deny or a missing Allow.",
+  "kw": [
+   "explicit deny",
+   "deny",
+   "evaluation",
+   "intersection",
+   "identity policy",
+   "bucket policy",
+   "effective permissions",
+   "resource policy"
+  ]
+ },
+ {
+  "id": "iam-roles",
+  "b": 1,
+  "t": "Roles and temporary credentials",
+  "s": "Roles give temporary credentials through STS; they are the answer whenever 'no long-term credentials' appears.",
+  "p": [
+   "EC2 → instance profile; Lambda → execution role; ECS → task role (your code) vs execution role (agent pulls image, writes logs).",
+   "Cross-account: role in the resource account with a trust policy for the caller; caller needs sts:AssumeRole.",
+   "Third parties: role + external ID to avoid the confused deputy problem.",
+   "Outside AWS: IAM Roles Anywhere (X.509) — never access keys."
+  ],
+  "tip": "Access keys stored anywhere (user data, AMI, env vars, Secrets Manager) are almost never the best answer.",
+  "kw": [
+   "assumerole",
+   "assume",
+   "role",
+   "instance profile",
+   "external id",
+   "sts",
+   "task role",
+   "execution role",
+   "roles anywhere",
+   "long-term",
+   "temporary credentials",
+   "access keys"
+  ]
+ },
+ {
+  "id": "iam-org",
+  "b": 1,
+  "t": "Organizations, SCPs and Control Tower",
+  "s": "SCPs cap what member accounts can do; they never grant anything and never apply to the management account.",
+  "p": [
+   "SCPs apply to every principal in member accounts, including the root user.",
+   "Typical SCPs: restrict Regions (aws:RequestedRegion), protect CloudTrail/Config, deny LeaveOrganization.",
+   "Consolidated billing: one bill, aggregated volume tiers, shared RIs and Savings Plans.",
+   "Control Tower builds a landing zone (log archive + audit accounts), applies guardrails and vends accounts with Account Factory."
+  ],
+  "tip": "'Nobody, including administrators, across many accounts' → SCP. 'Set up a governed multi-account environment fast' → Control Tower.",
+  "kw": [
+   "scp",
+   "organization",
+   "organizations",
+   "control tower",
+   "management account",
+   "ou",
+   "guardrail",
+   "landing zone",
+   "consolidated billing",
+   "requestedregion",
+   "leaveorganization"
+  ]
+ },
+ {
+  "id": "iam-boundary",
+  "b": 1,
+  "t": "Permissions boundaries and ABAC",
+  "s": "Boundaries set the maximum an identity can ever get; ABAC grants by matching tags.",
+  "p": [
+   "Use a boundary to let developers create roles safely: require iam:PermissionsBoundary on CreateRole.",
+   "A boundary doesn't grant: the identity policy still has to allow.",
+   "ABAC: compare aws:ResourceTag/x with aws:PrincipalTag/x; one policy scales to new resources.",
+   "Force MFA for sensitive actions with aws:MultiFactorAuthPresent."
+  ],
+  "tip": "'Delegate without privilege escalation' → permissions boundary. 'Scales automatically as resources are added, by project/team' → ABAC.",
+  "kw": [
+   "permissions boundary",
+   "boundary",
+   "abac",
+   "principaltag",
+   "resourcetag",
+   "escalation",
+   "multifactorauthpresent",
+   "mfa"
+  ]
+ },
+ {
+  "id": "iam-identity",
+  "b": 1,
+  "t": "Workforce vs customer identity",
+  "s": "Employees → IAM Identity Center; app customers → Cognito; Windows domains → Directory Service.",
+  "p": [
+   "Identity Center: SSO across accounts, external IdP via SAML + SCIM, permission sets assigned per account.",
+   "Cognito user pool: sign-up/sign-in, MFA, JWTs (API Gateway authorizer).",
+   "Cognito identity pool: exchanges logins for temporary AWS credentials; scope with ${cognito-identity.amazonaws.com:sub}.",
+   "AD Connector proxies to on-prem AD (no data cached); Managed Microsoft AD runs a real AD in AWS and survives link loss."
+  ],
+  "tip": "Read who the users are: employees, end customers, or Windows servers joining a domain.",
+  "kw": [
+   "identity center",
+   "sso",
+   "cognito",
+   "saml",
+   "scim",
+   "user pool",
+   "identity pool",
+   "ad connector",
+   "managed microsoft ad",
+   "active directory",
+   "simple ad",
+   "federat"
+  ]
+ },
+ {
+  "id": "iam-tools",
+  "b": 1,
+  "t": "Finding and fixing access problems",
+  "s": "Access Analyzer finds external access and generates least-privilege policies; CloudTrail shows who did what.",
+  "p": [
+   "Access Analyzer: findings for resources shared outside the zone of trust (account or org).",
+   "Policy generation from CloudTrail activity to trim over-permissive roles.",
+   "Leaked access key: deactivate first, then rotate and investigate.",
+   "Stolen role credentials: 'Revoke active sessions' (Deny on aws:TokenIssueTime).",
+   "aws:PrincipalOrgID in a resource policy covers every account of the org, present and future."
+  ],
+  "tip": "Detection services (GuardDuty, Macie, Inspector) don't analyze policies — that's Access Analyzer.",
+  "kw": [
+   "access analyzer",
+   "least privilege",
+   "leaked",
+   "revoke",
+   "principalorgid",
+   "external principals",
+   "tokenissuetime",
+   "object ownership",
+   "acl"
+  ]
+ },
+ {
+  "id": "iam-root",
+  "b": 1,
+  "t": "Root user and instance metadata",
+  "s": "Lock the root user away and protect role credentials on instances with IMDSv2.",
+  "p": [
+   "Root: MFA, no access keys, use only for the few tasks that require it.",
+   "IMDSv2 requires a session token (PUT + header): blocks typical SSRF credential theft.",
+   "Security groups can't filter traffic to the metadata service.",
+   "Organization trail logs every account and can't be disabled by members."
+  ],
+  "tip": "SSRF + instance credentials → IMDSv2 required.",
+  "kw": [
+   "root user",
+   "root",
+   "imdsv2",
+   "metadata",
+   "ssrf",
+   "organization trail"
+  ]
+ },
+ {
+  "id": "net-vpc",
+  "b": 2,
+  "t": "VPC building blocks",
+  "s": "A subnet is public only because its route table sends 0.0.0.0/0 to an internet gateway.",
+  "p": [
+   "One IGW per VPC; subnets live in exactly one AZ.",
+   "AWS reserves 5 IPs per subnet (a /28 has 11 usable).",
+   "You can't change a VPC's primary CIDR or a subnet's CIDR — add a secondary CIDR instead.",
+   "Peering needs non-overlapping CIDRs and is not transitive."
+  ],
+  "tip": "Classic architecture: public ALB in 2+ AZs, instances in private subnets, SG of instances allows only the ALB SG.",
+  "kw": [
+   "subnet",
+   "cidr",
+   "route table",
+   "internet gateway",
+   "igw",
+   "public subnet",
+   "private subnet",
+   "secondary cidr",
+   "reserved"
+  ]
+ },
+ {
+  "id": "net-nat",
+  "b": 2,
+  "t": "Internet egress: NAT gateway and friends",
+  "s": "NAT gateways give private IPv4 subnets outbound internet; they are zonal, so one per AZ for HA.",
+  "p": [
+   "NAT gateway sits in a public subnet with an Elastic IP; private route tables point 0.0.0.0/0 to it.",
+   "One per AZ with per-AZ route tables avoids cross-AZ dependency; one shared NAT is the cheap, non-HA option.",
+   "NAT instance: you manage it and must disable source/destination check.",
+   "IPv6 outbound-only → egress-only internet gateway.",
+   "NAT gives a fixed egress IP for partner allow-lists.",
+   "NAT charges per hour and per GB processed — S3/DynamoDB traffic should use gateway endpoints instead."
+  ],
+  "tip": "'HA' → NAT per AZ. 'Dev, minimize cost' → single NAT. 'IPv6' → egress-only IGW.",
+  "kw": [
+   "nat",
+   "nat gateway",
+   "nat instance",
+   "egress-only",
+   "egress",
+   "source/destination",
+   "elastic ip",
+   "outbound internet"
+  ]
+ },
+ {
+  "id": "net-sgnacl",
+  "b": 2,
+  "t": "Security groups vs network ACLs",
+  "s": "SGs are stateful allow-lists on ENIs; NACLs are stateless numbered rules on subnets that can deny.",
+  "p": [
+   "SG: allow only, stateful (return traffic automatic), can reference other SGs.",
+   "NACL: allow and deny, stateless (open ephemeral ports 1024–65535 for responses), lowest rule number wins.",
+   "To block a specific IP range → NACL deny with a lower number than the allows.",
+   "Default NACL allows everything; a custom NACL denies everything until you add rules."
+  ],
+  "tip": "'Block an IP' → NACL. 'Allow only from the web tier that scales' → reference the SG.",
+  "kw": [
+   "security group",
+   "network acl",
+   "nacl",
+   "stateless",
+   "stateful",
+   "ephemeral",
+   "deny rule",
+   "rule number",
+   "block"
+  ]
+ },
+ {
+  "id": "net-endpoints",
+  "b": 2,
+  "t": "VPC endpoints and PrivateLink",
+  "s": "Gateway endpoints (S3, DynamoDB) are free route-table targets; interface endpoints are private ENIs for almost everything else.",
+  "p": [
+   "Gateway endpoint: only S3 and DynamoDB, no charge, only reachable from inside the VPC.",
+   "Interface endpoint (PrivateLink): ENI with private IP, per-hour + per-GB cost, reachable over VPN/DX.",
+   "Endpoint policies restrict what can be accessed through the endpoint (e.g. aws:ResourceOrgID).",
+   "Bucket policy with aws:SourceVpce forces access through a specific endpoint.",
+   "PrivateLink endpoint service (behind an NLB) exposes one service to other VPCs — works with overlapping CIDRs."
+  ],
+  "tip": "'S3 from on-prem over DX' → interface endpoint. 'Cut NAT cost for S3' → gateway endpoint.",
+  "kw": [
+   "endpoint",
+   "gateway endpoint",
+   "interface endpoint",
+   "privatelink",
+   "sourcevpce",
+   "endpoint policy",
+   "endpoint service",
+   "resourceorgid"
+  ]
+ },
+ {
+  "id": "net-hybrid",
+  "b": 2,
+  "t": "Connecting networks: peering, TGW, VPN, Direct Connect",
+  "s": "Peering for a few VPCs, Transit Gateway as the hub at scale, VPN for fast encrypted links, Direct Connect for consistent performance.",
+  "p": [
+   "Peering: 1:1, non-transitive, no overlapping CIDRs.",
+   "Transit Gateway: hub for many VPCs, VPNs and DX; segment with multiple TGW route tables; subnet route tables must point to the TGW too.",
+   "Site-to-Site VPN: IPsec over internet, ready in hours, two tunnels; add a second customer gateway for on-prem redundancy; accelerated VPN needs a TGW.",
+   "Direct Connect: weeks to provision, not encrypted by default (IPsec over DX or MACsec), DX gateway reaches many Regions, hosted connections for low bandwidth.",
+   "Max resilience: separate DX connections in two locations; cheap backup: DX + VPN."
+  ],
+  "tip": "Watch for time ('within days' → VPN), consistency ('predictable' → DX) and scale ('dozens of VPCs' → TGW).",
+  "kw": [
+   "peering",
+   "transit gateway",
+   "tgw",
+   "vpn",
+   "direct connect",
+   "dx",
+   "customer gateway",
+   "hosted connection",
+   "macsec",
+   "direct connect gateway",
+   "transitive",
+   "client vpn"
+  ]
+ },
+ {
+  "id": "net-r53",
+  "b": 2,
+  "t": "Route 53 routing policies",
+  "s": "Pick the policy by the requirement: failover, latency, location, percentage or distance.",
+  "p": [
+   "Failover: active-passive with health checks (private resources → CloudWatch alarm health check).",
+   "Latency: best response time across Regions.",
+   "Geolocation: must serve by user location (compliance, content rights); add a default record.",
+   "Weighted: percentages for canary/blue-green.",
+   "Geoproximity: distance with a bias.",
+   "Multivalue: up to 8 healthy IPs, no load balancer.",
+   "Alias records work at the zone apex and point to AWS resources for free."
+  ],
+  "tip": "'Must always serve EU users from EU' → geolocation, not latency.",
+  "kw": [
+   "route 53",
+   "failover routing",
+   "latency",
+   "geolocation",
+   "geoproximity",
+   "weighted",
+   "multivalue",
+   "alias",
+   "zone apex",
+   "health check"
+  ]
+ },
+ {
+  "id": "net-dns-hybrid",
+  "b": 2,
+  "t": "Hybrid DNS and private zones",
+  "s": "Resolver inbound endpoints answer on-prem queries; outbound endpoints forward VPC queries to on-prem DNS.",
+  "p": [
+   "Private hosted zones need enableDnsSupport and enableDnsHostnames on the VPC.",
+   "Inbound endpoint: on-prem → AWS private zones.",
+   "Outbound endpoint + forwarding rule: AWS → on-prem domains."
+  ],
+  "tip": "Direction of the query decides inbound vs outbound.",
+  "kw": [
+   "resolver",
+   "inbound endpoint",
+   "outbound endpoint",
+   "private hosted zone",
+   "dns",
+   "forwarding rule",
+   "enablednssupport"
+  ]
+ },
+ {
+  "id": "net-inspect",
+  "b": 2,
+  "t": "Seeing and filtering traffic",
+  "s": "Flow Logs show metadata, Traffic Mirroring copies packets, Network Firewall filters, GWLB inserts appliances.",
+  "p": [
+   "VPC Flow Logs: IPs, ports, ACCEPT/REJECT — no payload.",
+   "Traffic Mirroring: full packets to an IDS.",
+   "AWS Network Firewall: stateful, IPS, domain allow-lists for egress.",
+   "Gateway Load Balancer: transparent third-party appliances (GENEVE).",
+   "Session Manager replaces bastions: no inbound ports, no SSH keys, sessions logged.",
+   "VPC sharing (RAM): other accounts launch into a central team's subnets."
+  ],
+  "tip": "'Filter by domain name' → Network Firewall (SGs and NACLs only know IPs).",
+  "kw": [
+   "flow logs",
+   "traffic mirroring",
+   "network firewall",
+   "gateway load balancer",
+   "gwlb",
+   "session manager",
+   "bastion",
+   "vpc sharing",
+   "packet"
+  ]
+ },
+ {
+  "id": "cmp-pricing",
+  "b": 3,
+  "t": "EC2 purchasing options",
+  "s": "Match the payment model to the usage shape: steady → commit, spiky → On-Demand, interruptible → Spot.",
+  "p": [
+   "On-Demand: no commitment.",
+   "Savings Plans: $/h commitment 1–3 years; Compute SP covers any family, Region, Fargate and Lambda; EC2 Instance SP is cheaper but locked to a family + Region.",
+   "Reserved Instances: Standard (biggest discount, fixed) or Convertible.",
+   "Spot: up to 90% off, 2-minute interruption notice; diversify instance types.",
+   "Capacity Reservations: guarantee capacity in an AZ, no term.",
+   "Dedicated Hosts: socket/core visibility for BYOL licensing."
+  ],
+  "tip": "Baseline + peaks → commit for the baseline, On-Demand/Spot for peaks.",
+  "kw": [
+   "spot",
+   "on-demand",
+   "reserved",
+   "savings plan",
+   "capacity reservation",
+   "dedicated host",
+   "dedicated instance",
+   "purchasing",
+   "byol",
+   "interrupt"
+  ]
+ },
+ {
+  "id": "cmp-placement",
+  "b": 3,
+  "t": "Placement groups and instance features",
+  "s": "Cluster for latency, spread for isolation of a few critical instances, partition for big distributed systems.",
+  "p": [
+   "Cluster: one AZ, packed together, lowest latency (HPC, add EFA).",
+   "Spread: distinct hardware, max 7 instances per AZ per group.",
+   "Partition: separate racks per partition, topology visible (Cassandra, HDFS, Kafka).",
+   "Hibernation keeps RAM on the encrypted EBS root.",
+   "Instance store: fastest local disk, data lost on stop.",
+   "AMIs are Regional — copy them to other Regions.",
+   "Graviton: better price-performance on Arm."
+  ],
+  "tip": "HPC tightly coupled → cluster + EFA.",
+  "kw": [
+   "placement group",
+   "cluster",
+   "spread",
+   "partition",
+   "efa",
+   "hpc",
+   "hibernat",
+   "ami",
+   "graviton",
+   "instance store"
+  ]
+ },
+ {
+  "id": "cmp-asg",
+  "b": 3,
+  "t": "Auto Scaling",
+  "s": "ASGs keep capacity healthy across AZs and scale with policies chosen by the load pattern.",
+  "p": [
+   "Target tracking: keep a metric at a value (simplest).",
+   "Step/simple: react to alarm thresholds.",
+   "Scheduled/predictive: known patterns, scale before the spike.",
+   "Warm pools: pre-initialized instances for slow boots.",
+   "Lifecycle hooks: custom actions on launch/terminate (e.g. upload logs).",
+   "Enable ELB health checks so app failures trigger replacement.",
+   "Instance refresh for rolling deployments with rollback.",
+   "Mixed instances policy: On-Demand base + Spot across types.",
+   "Queue workers: scale on backlog per instance, not CPU."
+  ],
+  "tip": "'Users slow every morning at 8' → scheduled/predictive, not lower thresholds.",
+  "kw": [
+   "auto scaling",
+   "asg",
+   "target tracking",
+   "step scaling",
+   "scheduled",
+   "predictive",
+   "warm pool",
+   "lifecycle hook",
+   "instance refresh",
+   "mixed instances",
+   "health check"
+  ]
+ },
+ {
+  "id": "cmp-elb",
+  "b": 3,
+  "t": "Choosing a load balancer",
+  "s": "ALB for HTTP routing, NLB for TCP/UDP performance and static IPs, GWLB for appliances.",
+  "p": [
+   "ALB: path, host, header routing; Lambda targets; multiple TLS certs with SNI; sticky sessions; WAF.",
+   "NLB: layer 4, millions of req/s, one static/Elastic IP per AZ, preserves source IP.",
+   "Deregistration delay lets in-flight requests finish.",
+   "Cross-zone balancing spreads load evenly across AZs."
+  ],
+  "tip": "'Static IP' or 'UDP' → NLB (or Global Accelerator). 'Path-based' → ALB.",
+  "kw": [
+   "application load balancer",
+   "alb",
+   "network load balancer",
+   "nlb",
+   "sticky",
+   "deregistration",
+   "sni",
+   "listener",
+   "target group",
+   "load balancer"
+  ]
+ },
+ {
+  "id": "cmp-lambda",
+  "b": 3,
+  "t": "Lambda essentials",
+  "s": "Event-driven code with a 15-minute limit; control concurrency to protect downstream systems.",
+  "p": [
+   "Max 15 minutes per invocation — longer jobs go to Fargate/ECS/Batch.",
+   "Provisioned concurrency removes cold starts; reserved concurrency caps a function.",
+   "Use RDS Proxy when many invocations hit a relational database.",
+   "Async invocations: retries + on-failure destination or DLQ.",
+   "Function URL: simplest HTTPS endpoint for one function."
+  ],
+  "tip": "'Takes 40 minutes' → not Lambda.",
+  "kw": [
+   "lambda",
+   "cold start",
+   "provisioned concurrency",
+   "reserved concurrency",
+   "timeout",
+   "function url",
+   "15 minutes"
+  ]
+ },
+ {
+  "id": "cmp-containers",
+  "b": 3,
+  "t": "Containers and managed platforms",
+  "s": "Fargate removes servers; EKS keeps Kubernetes tooling; Beanstalk and App Runner hide the infrastructure.",
+  "p": [
+   "ECS: AWS-native orchestration; EKS: managed Kubernetes (Helm/kubectl keep working).",
+   "Fargate: serverless compute for ECS/EKS.",
+   "AWS Batch: job queues and managed compute (incl. Spot) for batch workloads.",
+   "Elastic Beanstalk: upload code, AWS builds ALB+ASG, you can still reach the EC2s.",
+   "App Runner: container image → HTTPS service with zero infrastructure config.",
+   "Local Zones (near users), Outposts (your data center), Wavelength (5G)."
+  ],
+  "tip": "'Without managing servers' + containers → Fargate.",
+  "kw": [
+   "fargate",
+   "ecs",
+   "eks",
+   "kubernetes",
+   "batch",
+   "beanstalk",
+   "app runner",
+   "container",
+   "local zone",
+   "outposts",
+   "wavelength"
+  ]
+ },
+ {
+  "id": "sto-classes",
+  "b": 4,
+  "t": "S3 storage classes and lifecycle",
+  "s": "Choose by access frequency, retrieval time and whether data can be recreated.",
+  "p": [
+   "Standard → frequent access.",
+   "Standard-IA → infrequent, ms access; 30-day minimum, 128 KB minimum billable size.",
+   "One Zone-IA → infrequent and re-creatable (single AZ).",
+   "Intelligent-Tiering → unknown or changing patterns, no retrieval fees.",
+   "Glacier Instant Retrieval → rare access, ms retrieval.",
+   "Glacier Flexible Retrieval → minutes to hours. Deep Archive → cheapest, 12–48 h, 180-day minimum.",
+   "Lifecycle rules transition and expire; also abort incomplete multipart uploads."
+  ],
+  "tip": "Known pattern → lifecycle; unknown pattern → Intelligent-Tiering.",
+  "kw": [
+   "storage class",
+   "standard-ia",
+   "one zone",
+   "intelligent-tiering",
+   "glacier",
+   "deep archive",
+   "lifecycle",
+   "infrequent",
+   "archive",
+   "retrieval"
+  ]
+ },
+ {
+  "id": "sto-s3protect",
+  "b": 4,
+  "t": "Protecting S3 data",
+  "s": "Versioning undoes mistakes, Object Lock makes data immutable, replication copies it elsewhere.",
+  "p": [
+   "Versioning keeps every version; delete adds a marker.",
+   "Object Lock: governance (bypassable with permission) vs compliance (nobody, not even root).",
+   "MFA Delete adds friction but isn't immutability.",
+   "CRR/SRR need versioning and copy only new objects — Batch Replication for existing ones.",
+   "Block Public Access at account level stops any public exposure."
+  ],
+  "tip": "'Nobody, including root' → Object Lock compliance mode.",
+  "kw": [
+   "versioning",
+   "object lock",
+   "compliance mode",
+   "governance",
+   "mfa delete",
+   "replication",
+   "cross-region",
+   "batch replication",
+   "block public access",
+   "worm"
+  ]
+ },
+ {
+  "id": "sto-s3sec",
+  "b": 4,
+  "t": "S3 encryption and access patterns",
+  "s": "SSE-KMS when you need control and audit; presigned URLs and CloudFront OAC for controlled access.",
+  "p": [
+   "SSE-S3 default; SSE-KMS for key control + CloudTrail audit; Bucket Keys cut KMS costs.",
+   "Enforce a key: default encryption + bucket policy condition on the KMS key ID.",
+   "Presigned URL: time-limited access to one private object.",
+   "CloudFront + OAC: private bucket served globally over HTTPS.",
+   "Access Points: per-team policies on a shared bucket; Requester Pays shifts transfer cost."
+  ],
+  "tip": "'Many KMS requests are expensive' → S3 Bucket Keys.",
+  "kw": [
+   "sse-kms",
+   "sse-s3",
+   "encryption",
+   "bucket key",
+   "presigned",
+   "oac",
+   "origin access",
+   "access point",
+   "requester pays",
+   "kms key"
+  ]
+ },
+ {
+  "id": "sto-s3perf",
+  "b": 4,
+  "t": "S3 performance and events",
+  "s": "Multipart and Transfer Acceleration for uploads, byte-range for partial reads, EventBridge for many consumers.",
+  "p": [
+   "Multipart upload for large files (>100 MB): parallel, retry per part.",
+   "Transfer Acceleration: distant users upload via edge locations.",
+   "Byte-range fetches read part of an object.",
+   "Event notifications → Lambda/SQS/SNS, or EventBridge for many filtered targets.",
+   "Storage Lens: org-wide usage analytics."
+  ],
+  "tip": "Far-away uploads → Transfer Acceleration + multipart.",
+  "kw": [
+   "multipart",
+   "transfer acceleration",
+   "byte-range",
+   "event notification",
+   "storage lens",
+   "upload"
+  ]
+ },
+ {
+  "id": "sto-ebs",
+  "b": 4,
+  "t": "EBS volumes and snapshots",
+  "s": "EBS is block storage bound to one AZ; snapshots move data between AZs and Regions.",
+  "p": [
+   "gp3: default SSD, IOPS/throughput independent of size, cheaper than gp2.",
+   "io2 Block Express: highest IOPS, 99.999% durability, Multi-Attach in one AZ.",
+   "st1: throughput HDD for big sequential data; sc1: coldest, cheapest.",
+   "Encrypt an existing volume: snapshot → encrypted copy → new volume; or enable encryption by default.",
+   "Fast Snapshot Restore: full performance right after restore.",
+   "Data Lifecycle Manager automates snapshots."
+  ],
+  "tip": "'Move a volume to another AZ' → snapshot and restore.",
+  "kw": [
+   "ebs",
+   "gp3",
+   "gp2",
+   "io2",
+   "io1",
+   "st1",
+   "sc1",
+   "snapshot",
+   "multi-attach",
+   "fast snapshot restore",
+   "volume"
+  ]
+ },
+ {
+  "id": "sto-files",
+  "b": 4,
+  "t": "File storage: EFS and the FSx family",
+  "s": "EFS for shared Linux NFS; FSx for Windows SMB, Lustre HPC, ONTAP multi-protocol.",
+  "p": [
+   "EFS: multi-AZ NFS, elastic, lifecycle to IA/Archive.",
+   "FSx for Windows: SMB + Active Directory + NTFS ACLs.",
+   "FSx for Lustre: hundreds of GB/s for HPC/ML, linked to S3.",
+   "FSx for NetApp ONTAP: NFS + SMB + iSCSI, snapshots, SnapMirror.",
+   "FSx for OpenZFS: managed ZFS over NFS."
+  ],
+  "tip": "Protocol decides: NFS/Linux → EFS, SMB/Windows → FSx Windows, HPC → Lustre.",
+  "kw": [
+   "efs",
+   "fsx",
+   "lustre",
+   "ontap",
+   "openzfs",
+   "nfs",
+   "smb",
+   "file system",
+   "shared file"
+  ]
+ },
+ {
+  "id": "sto-hybrid",
+  "b": 4,
+  "t": "Hybrid storage and data transfer",
+  "s": "Gateways connect on-prem apps to AWS storage; DataSync moves data online; Snowball moves it offline.",
+  "p": [
+   "S3 File Gateway: NFS/SMB on-prem stored as S3 objects with local cache.",
+   "Volume Gateway: iSCSI, cached (primary in AWS) or stored (primary on-prem).",
+   "Tape Gateway: virtual tape library for existing backup software.",
+   "DataSync: scheduled, validated online transfers to S3/EFS/FSx.",
+   "Snowball Edge: when the network would take too long.",
+   "Transfer Family: managed SFTP/FTPS into S3 or EFS.",
+   "AWS Backup + Vault Lock: central, immutable backups."
+  ],
+  "tip": "Do the bandwidth math: TB ÷ link speed. Months → Snowball.",
+  "kw": [
+   "storage gateway",
+   "file gateway",
+   "volume gateway",
+   "tape gateway",
+   "datasync",
+   "snowball",
+   "transfer family",
+   "sftp",
+   "aws backup",
+   "vault lock"
+  ]
+ },
+ {
+  "id": "db-rds",
+  "b": 5,
+  "t": "RDS high availability vs read scaling",
+  "s": "Multi-AZ is for availability (synchronous); read replicas are for reads and DR (asynchronous).",
+  "p": [
+   "Multi-AZ instance: standby not readable, automatic failover, same endpoint.",
+   "Multi-AZ DB cluster: two readable standbys, faster failover.",
+   "Read replicas: async, can be cross-Region, promote manually for DR.",
+   "PITR restores to any second in the retention window (new instance).",
+   "Encrypting an existing DB: encrypted snapshot copy → restore.",
+   "IAM DB auth: 15-minute tokens instead of passwords."
+  ],
+  "tip": "'No data loss + automatic failover' → Multi-AZ. 'Offload reports' → read replica.",
+  "kw": [
+   "multi-az",
+   "read replica",
+   "rds",
+   "failover",
+   "standby",
+   "point-in-time",
+   "pitr",
+   "promote",
+   "iam database authentication",
+   "snapshot"
+  ]
+ },
+ {
+  "id": "db-aurora",
+  "b": 5,
+  "t": "Aurora specifics",
+  "s": "Aurora stores 6 copies across 3 AZs and adds features RDS doesn't have.",
+  "p": [
+   "Up to 15 replicas behind a reader endpoint.",
+   "Global Database: cross-Region replication under ~1 s, promote in ~1 min.",
+   "Serverless v2: scales capacity with load.",
+   "Backtrack (MySQL): rewind in place; cloning: fast copy-on-write copy.",
+   "Zero-ETL to Redshift for near real-time analytics.",
+   "RDS Proxy pools connections and speeds up failover."
+  ],
+  "tip": "'RPO ~1 s, RTO < 1 min across Regions' → Aurora Global Database.",
+  "kw": [
+   "aurora",
+   "global database",
+   "serverless v2",
+   "reader endpoint",
+   "backtrack",
+   "clon",
+   "zero-etl",
+   "rds proxy"
+  ]
+ },
+ {
+  "id": "db-dynamo",
+  "b": 5,
+  "t": "DynamoDB in one page",
+  "s": "Serverless key-value with single-digit ms latency; design keys for your access patterns.",
+  "p": [
+   "On-demand for unpredictable traffic; provisioned (+ reserved) for steady traffic.",
+   "GSI: new partition key, add any time; LSI: same partition key, at creation only.",
+   "DAX: microsecond reads cache.",
+   "Global tables: multi-Region active-active.",
+   "Streams + Lambda: react to changes; TTL: free expiry; PITR: 35 days."
+  ],
+  "tip": "'Unpredictable, any scale, least ops' → DynamoDB on-demand.",
+  "kw": [
+   "dynamodb",
+   "dax",
+   "global table",
+   "gsi",
+   "lsi",
+   "streams",
+   "ttl",
+   "on-demand",
+   "provisioned capacity"
+  ]
+ },
+ {
+  "id": "db-cache",
+  "b": 5,
+  "t": "Caching",
+  "s": "Cache reads to protect databases: Redis/Valkey for features and HA, Memcached for simple multithreaded caching.",
+  "p": [
+   "Redis/Valkey: replication, Multi-AZ failover, persistence, sorted sets (leaderboards).",
+   "Memcached: simple, multithreaded, no replication.",
+   "MemoryDB: durable Redis-compatible primary database.",
+   "DAX is only for DynamoDB."
+  ],
+  "tip": "'Leaderboard' → Redis sorted sets.",
+  "kw": [
+   "elasticache",
+   "redis",
+   "valkey",
+   "memcached",
+   "memorydb",
+   "cache",
+   "leaderboard",
+   "session"
+  ]
+ },
+ {
+  "id": "db-purpose",
+  "b": 5,
+  "t": "Purpose-built databases",
+  "s": "Choose the database by data model and query, not by habit.",
+  "p": [
+   "Redshift: data warehouse (Spectrum queries S3).",
+   "Neptune: graph relationships.",
+   "DocumentDB: MongoDB-compatible.",
+   "Keyspaces: Cassandra/CQL.",
+   "Timestream: time series.",
+   "OpenSearch: full-text search and log analytics.",
+   "DMS + SCT: heterogeneous migrations (full load + CDC)."
+  ],
+  "tip": "Look for the data shape keyword: 'relationships', 'time series', 'MongoDB', 'full-text'.",
+  "kw": [
+   "redshift",
+   "neptune",
+   "documentdb",
+   "keyspaces",
+   "timestream",
+   "opensearch",
+   "dms",
+   "schema conversion",
+   "mongodb",
+   "cassandra",
+   "graph",
+   "warehouse"
+  ]
+ },
+ {
+  "id": "dec-sqs",
+  "b": 6,
+  "t": "SQS behaviour",
+  "s": "Queues absorb load and failures; tune visibility, polling and failures.",
+  "p": [
+   "Standard: at-least-once, best-effort order → make consumers idempotent.",
+   "FIFO: order per message group + dedup within 5 minutes.",
+   "Visibility timeout > processing time, or messages reappear.",
+   "Long polling (up to 20 s) cuts empty receives.",
+   "DLQ after maxReceiveCount for poison messages.",
+   "Delay queues hide new messages up to 15 minutes.",
+   "Large payloads → S3 + pointer (Extended Client)."
+  ],
+  "tip": "'Processed twice' → visibility timeout or idempotency.",
+  "kw": [
+   "sqs",
+   "queue",
+   "fifo",
+   "visibility timeout",
+   "long polling",
+   "dead-letter",
+   "dlq",
+   "delay queue",
+   "deduplication",
+   "message group",
+   "idempot"
+  ]
+ },
+ {
+  "id": "dec-pubsub",
+  "b": 6,
+  "t": "SNS, EventBridge and fan-out",
+  "s": "SNS pushes to many subscribers; EventBridge routes events with rules from AWS, apps and SaaS.",
+  "p": [
+   "SNS + SQS fan-out: every consumer gets its own durable copy.",
+   "SNS filter policies deliver only matching messages.",
+   "EventBridge: content rules, SaaS partners, Scheduler (cron), archive & replay, cross-account buses, API destinations.",
+   "EventBridge Pipes: source → filter/enrich → target without code."
+  ],
+  "tip": "'One event, several independent consumers' → SNS → SQS fan-out.",
+  "kw": [
+   "sns",
+   "fan-out",
+   "eventbridge",
+   "scheduler",
+   "filter policy",
+   "archive",
+   "replay",
+   "pipes",
+   "api destination",
+   "event bus"
+  ]
+ },
+ {
+  "id": "dec-streams",
+  "b": 6,
+  "t": "Streaming data",
+  "s": "Kinesis Data Streams for ordered, replayable streams; Firehose for managed delivery.",
+  "p": [
+   "Data Streams: shards, order per partition key, multiple consumers, replay up to 365 days.",
+   "Enhanced fan-out: 2 MB/s per shard per consumer.",
+   "Firehose: buffers and delivers to S3/Redshift/OpenSearch, converts to Parquet.",
+   "Managed Flink: windowed real-time analytics.",
+   "MSK for Kafka; Amazon MQ for ActiveMQ/RabbitMQ migrations."
+  ],
+  "tip": "'Replay' or 'several consumers in order' → Data Streams, not SQS.",
+  "kw": [
+   "kinesis",
+   "data streams",
+   "firehose",
+   "shard",
+   "enhanced fan-out",
+   "flink",
+   "msk",
+   "kafka",
+   "amazon mq",
+   "activemq",
+   "rabbitmq",
+   "stream"
+  ]
+ },
+ {
+  "id": "dec-orch",
+  "b": 6,
+  "t": "Orchestration and APIs",
+  "s": "Step Functions orchestrates steps; API Gateway fronts them for clients.",
+  "p": [
+   "Step Functions Standard: long-running, auditable; Express: high-volume, < 5 minutes.",
+   "Task token callback waits for humans or external systems.",
+   "API Gateway REST: usage plans, API keys, caching; HTTP API: cheaper, JWT; WebSocket: push.",
+   "Private APIs through interface endpoints.",
+   "AppSync: GraphQL with subscriptions."
+  ],
+  "tip": "'Human approval in a workflow' → Step Functions task token.",
+  "kw": [
+   "step functions",
+   "workflow",
+   "task token",
+   "api gateway",
+   "usage plan",
+   "websocket",
+   "http api",
+   "rest api",
+   "appsync",
+   "graphql",
+   "throttl"
+  ]
+ },
+ {
+  "id": "sec-kms",
+  "b": 7,
+  "t": "KMS and keys",
+  "s": "KMS manages keys with policies, rotation and audit; CloudHSM when you need dedicated hardware.",
+  "p": [
+   "Customer managed keys: your key policy, rotation, disable, CloudTrail logs.",
+   "Envelope encryption: GenerateDataKey for data over 4 KB.",
+   "Multi-Region keys decrypt the same data in other Regions.",
+   "Grants delegate key use temporarily; kms:ViaService limits use to a service.",
+   "Cross-account: key policy trusts the account + IAM policy in that account.",
+   "CloudHSM: single-tenant FIPS 140-2 Level 3, you own the keys."
+  ],
+  "tip": "'Dedicated, single-tenant HSM' → CloudHSM; otherwise KMS.",
+  "kw": [
+   "kms",
+   "customer managed key",
+   "cloudhsm",
+   "envelope",
+   "data key",
+   "multi-region key",
+   "grant",
+   "viaservice",
+   "key policy",
+   "rotation"
+  ]
+ },
+ {
+  "id": "sec-secrets",
+  "b": 7,
+  "t": "Secrets, parameters and certificates",
+  "s": "Secrets Manager rotates; Parameter Store is cheap config; ACM gives free auto-renewing certificates.",
+  "p": [
+   "Secrets Manager: automatic rotation (RDS), cross-account secrets.",
+   "Parameter Store: free standard tier, SecureString with KMS, no built-in rotation.",
+   "ACM public certs are free and renew; CloudFront needs them in us-east-1.",
+   "End-to-end TLS: HTTPS listener + HTTPS target group."
+  ],
+  "tip": "'Rotate automatically' → Secrets Manager.",
+  "kw": [
+   "secrets manager",
+   "parameter store",
+   "securestring",
+   "rotation",
+   "acm",
+   "certificate",
+   "tls",
+   "https"
+  ]
+ },
+ {
+  "id": "sec-edge",
+  "b": 7,
+  "t": "Protecting the edge",
+  "s": "WAF filters HTTP, Shield absorbs DDoS, Firewall Manager applies both across accounts.",
+  "p": [
+   "WAF: managed rules (SQLi, XSS), rate-based rules, geo match; on CloudFront, ALB, API Gateway, AppSync.",
+   "Shield Standard: free L3/L4; Shield Advanced: SRT, cost protection.",
+   "Firewall Manager: org-wide WAF/SG/Shield policies, also for new resources.",
+   "CloudFront geo restriction blocks countries."
+  ],
+  "tip": "SQLi/XSS/rate limits → WAF. 'DDoS response team' → Shield Advanced.",
+  "kw": [
+   "waf",
+   "shield",
+   "ddos",
+   "firewall manager",
+   "sql injection",
+   "xss",
+   "rate-based",
+   "geo",
+   "web acl"
+  ]
+ },
+ {
+  "id": "sec-detect",
+  "b": 7,
+  "t": "Which security service for what",
+  "s": "Each detection service has one job — match the noun in the question.",
+  "p": [
+   "GuardDuty: threats from CloudTrail, VPC Flow Logs, DNS.",
+   "Inspector: CVEs in EC2, ECR images, Lambda.",
+   "Macie: PII in S3.",
+   "Detective: investigate findings.",
+   "Security Hub: aggregate findings + CIS/FSBP checks.",
+   "Config: configuration history, compliance, remediation.",
+   "Artifact: AWS compliance reports; Audit Manager: your evidence."
+  ],
+  "tip": "Threats → GuardDuty, vulnerabilities → Inspector, sensitive data → Macie.",
+  "kw": [
+   "guardduty",
+   "inspector",
+   "macie",
+   "detective",
+   "security hub",
+   "config",
+   "artifact",
+   "audit manager",
+   "pii",
+   "vulnerab",
+   "threat"
+  ]
+ },
+ {
+  "id": "sec-observe",
+  "b": 7,
+  "t": "Logging and monitoring",
+  "s": "CloudTrail answers who did what; CloudWatch answers how it's performing.",
+  "p": [
+   "CloudTrail management events by default; data events (S3 objects, Lambda invokes) must be enabled.",
+   "Log file integrity validation proves logs weren't changed; CloudTrail Lake for SQL + long retention.",
+   "CloudWatch agent for memory and disk metrics.",
+   "Metric filters turn log patterns into alarms; Logs Insights for ad hoc queries.",
+   "Composite alarms reduce noise; X-Ray traces requests.",
+   "Systems Manager Patch Manager for patching; AWS Health for AWS-side events; Trusted Advisor for checks."
+  ],
+  "tip": "'Memory utilization' → CloudWatch agent (not in default metrics).",
+  "kw": [
+   "cloudtrail",
+   "cloudwatch",
+   "data events",
+   "metric filter",
+   "logs insights",
+   "composite alarm",
+   "x-ray",
+   "patch manager",
+   "trusted advisor",
+   "aws health",
+   "log file"
+  ]
+ },
+ {
+  "id": "dr-strategies",
+  "b": 8,
+  "t": "Disaster recovery strategies",
+  "s": "Cost rises as RTO/RPO fall: backup & restore → pilot light → warm standby → multi-site.",
+  "p": [
+   "Backup & restore: hours; cheapest.",
+   "Pilot light: data replicated, core on, rest provisioned on demand; tens of minutes.",
+   "Warm standby: scaled-down full copy running; minutes.",
+   "Multi-site active-active: near zero; most expensive.",
+   "Elastic Disaster Recovery: continuous server replication, RPO seconds.",
+   "IaC (CloudFormation/CDK) makes recovery repeatable; Route 53 ARC controls failover."
+  ],
+  "tip": "Map the RTO/RPO numbers in the question to the cheapest strategy that meets them.",
+  "kw": [
+   "rto",
+   "rpo",
+   "disaster recovery",
+   "pilot light",
+   "warm standby",
+   "backup and restore",
+   "multi-site",
+   "active-active",
+   "elastic disaster recovery",
+   "drs"
+  ]
+ },
+ {
+  "id": "dr-edge",
+  "b": 8,
+  "t": "CloudFront vs Global Accelerator",
+  "s": "CloudFront caches HTTP content at the edge; Global Accelerator gives static anycast IPs for any TCP/UDP app.",
+  "p": [
+   "CloudFront: caching, signed URLs/cookies, origin groups for failover, OAC, geo restriction.",
+   "CloudFront Functions (light, cheap) vs Lambda@Edge (heavier, network access).",
+   "Global Accelerator: 2 static IPs, AWS backbone, fast Regional failover, UDP.",
+   "Both reduce latency; only CloudFront caches."
+  ],
+  "tip": "'Static IP', 'UDP', 'no DNS caching issues' → Global Accelerator.",
+  "kw": [
+   "cloudfront",
+   "global accelerator",
+   "signed url",
+   "signed cookie",
+   "origin group",
+   "lambda@edge",
+   "cloudfront functions",
+   "anycast",
+   "static ip"
+  ]
+ },
+ {
+  "id": "dr-cost",
+  "b": 8,
+  "t": "Cost tools and data transfer",
+  "s": "Budgets alert, Cost Explorer analyzes and recommends, CUR gives raw detail, tags allocate.",
+  "p": [
+   "Budgets: alerts on actual/forecast; Cost Anomaly Detection: ML on spend spikes.",
+   "Cost Explorer: trends + Savings Plan/RI recommendations.",
+   "Cost and Usage Report (Data Exports): line items in S3 for Athena.",
+   "Cost allocation tags group spend by team or project.",
+   "Data transfer: inbound free; internet egress, cross-AZ and cross-Region cost money; CloudFront and VPC endpoints reduce it.",
+   "Compute Optimizer: right-sizing; Trusted Advisor: idle resources."
+  ],
+  "tip": "'Alert when forecast exceeds' → Budgets; 'unexpected spike' → Anomaly Detection.",
+  "kw": [
+   "budget",
+   "cost explorer",
+   "cost and usage",
+   "cur",
+   "cost allocation",
+   "anomaly",
+   "data transfer",
+   "egress",
+   "savings plans recommendation",
+   "cost"
+  ]
+ },
+ {
+  "id": "dr-analytics",
+  "b": 8,
+  "t": "Analytics on AWS",
+  "s": "Athena queries S3; Glue catalogs and transforms; Lake Formation governs; EMR runs big data frameworks.",
+  "p": [
+   "Athena: serverless SQL, pay per data scanned — use Parquet + partitions.",
+   "Glue: crawlers, Data Catalog, serverless ETL.",
+   "Lake Formation: column/row-level permissions on the data lake.",
+   "EMR: Spark/Hadoop clusters (Spot for task nodes).",
+   "QuickSight: serverless BI dashboards."
+  ],
+  "tip": "'Reduce Athena cost' → columnar + compression + partitions.",
+  "kw": [
+   "athena",
+   "glue",
+   "lake formation",
+   "emr",
+   "quicksight",
+   "parquet",
+   "partition",
+   "data lake",
+   "etl",
+   "spark"
+  ]
+ },
+ {
+  "id": "dr-ai",
+  "b": 8,
+  "t": "AI/ML services cheat sheet",
+  "s": "Managed AI services each solve one task; Bedrock and SageMaker are for models.",
+  "p": [
+   "Rekognition: images/video; Textract: documents; Comprehend: text NLP.",
+   "Transcribe: speech→text; Polly: text→speech; Translate: languages; Lex: chatbots.",
+   "Kendra: enterprise search; Bedrock: foundation models + RAG; SageMaker: build your own models."
+  ],
+  "tip": "Match the input/output: audio→text = Transcribe; scanned form→fields = Textract.",
+  "kw": [
+   "rekognition",
+   "textract",
+   "comprehend",
+   "transcribe",
+   "polly",
+   "translate",
+   "lex",
+   "kendra",
+   "bedrock",
+   "sagemaker",
+   "machine learning"
+  ]
+ },
+ {
+  "id": "dr-migrate",
+  "b": 8,
+  "t": "Migration",
+  "s": "Pick the R that fits the application, then the tool that implements it.",
+  "p": [
+   "7 Rs: retire, retain, rehost, relocate, repurchase, replatform, refactor.",
+   "Rehost servers → Application Migration Service (MGN).",
+   "Databases → DMS (+ SCT for engine changes).",
+   "Files → DataSync; offline bulk → Snowball.",
+   "Multi-account deployments → CloudFormation StackSets."
+  ],
+  "tip": "'Will be replaced by SaaS' → repurchase.",
+  "kw": [
+   "migrat",
+   "rehost",
+   "application migration",
+   "mgn",
+   "7 rs",
+   "repurchase",
+   "replatform",
+   "refactor",
+   "stacksets",
+   "cloudformation",
+   "fault injection"
+  ]
+ }
+]

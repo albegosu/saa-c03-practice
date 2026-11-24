@@ -1,0 +1,283 @@
+[
+ {
+  "d": "2026-10-09",
+  "b": 1,
+  "t": "Identity · IAM basics",
+  "k": [
+   "Course: IAM, policies, roles",
+   "Lab: role scoped to one S3 prefix",
+   "15 questions · Block 1"
+  ]
+ },
+ {
+  "d": "2026-10-10",
+  "b": 1,
+  "t": "Baseline + Organizations",
+  "k": [
+   "Cold mock (no prep): Mini exam, all blocks",
+   "Course: Organizations, SCPs, Identity Center",
+   "Lab: bucket policy vs IAM policy conflict"
+  ]
+ },
+ {
+  "d": "2026-10-11",
+  "b": 1,
+  "t": "Identity wrap-up",
+  "k": [
+   "Blank-page recall: policy evaluation logic",
+   "20 questions · Block 1",
+   "Sunday mini-mock: Mini exam, all blocks"
+  ],
+  "m": 1
+ },
+ {
+  "d": "2026-10-12",
+  "b": 2,
+  "t": "Networking · VPC core",
+  "k": [
+   "Course: VPC, subnets, route tables, IGW, NAT",
+   "Lab: VPC in 2 AZs, public + private, NAT",
+   "15 questions · Block 2"
+  ]
+ },
+ {
+  "d": "2026-10-13",
+  "b": 2,
+  "t": "Networking · Security layers",
+  "k": [
+   "Course: SG vs NACL, endpoints (gateway vs interface)",
+   "Lab: S3 gateway endpoint + endpoint policy",
+   "15 questions · Block 2"
+  ]
+ },
+ {
+  "d": "2026-10-14",
+  "b": 2,
+  "t": "Networking · Hybrid",
+  "k": [
+   "Course: peering, TGW, VPN, Direct Connect",
+   "Pairs table: peering vs TGW vs PrivateLink",
+   "15 questions · Block 2 + 5 from Block 1"
+  ]
+ },
+ {
+  "d": "2026-10-15",
+  "b": 2,
+  "t": "Networking · Route 53",
+  "k": [
+   "Course: routing policies, Resolver endpoints",
+   "Rebuild the VPC lab from memory, no notes",
+   "Missed questions · Block 2"
+  ]
+ },
+ {
+  "d": "2026-10-16",
+  "b": 3,
+  "t": "Compute · EC2 & pricing",
+  "k": [
+   "Course: instance types, purchasing, placement groups",
+   "Glossary self-test · Block 3",
+   "15 questions · Block 3 (30% mixed)"
+  ]
+ },
+ {
+  "d": "2026-10-17",
+  "b": 3,
+  "t": "Compute · Scaling & ELB",
+  "k": [
+   "Course: ASG policies, ALB vs NLB",
+   "Lab: ALB + ASG target tracking, kill an instance",
+   "15 questions · Block 3"
+  ]
+ },
+ {
+  "d": "2026-10-18",
+  "b": 3,
+  "t": "Compute · Serverless & containers",
+  "k": [
+   "Course: Lambda, ECS/Fargate, EKS",
+   "20 questions · Block 3",
+   "Sunday mini-mock: Mini exam, all blocks"
+  ],
+  "m": 1
+ },
+ {
+  "d": "2026-10-19",
+  "b": 4,
+  "t": "Storage · S3",
+  "k": [
+   "Course: classes, lifecycle, versioning, replication",
+   "Lab: lifecycle rule + presigned URL",
+   "15 questions · Block 4"
+  ]
+ },
+ {
+  "d": "2026-10-20",
+  "b": 4,
+  "t": "Storage · S3 security & EBS",
+  "k": [
+   "Course: encryption, Object Lock, OAC, EBS types",
+   "Pairs table: S3 storage classes",
+   "15 questions · Block 4 (30% mixed)"
+  ]
+ },
+ {
+  "d": "2026-10-21",
+  "b": 4,
+  "t": "Storage · Files & hybrid",
+  "k": [
+   "Course: EFS, FSx family, Storage Gateway, DataSync, Snow",
+   "Lab: EFS mounted on two instances",
+   "Missed questions · Block 4"
+  ]
+ },
+ {
+  "d": "2026-10-22",
+  "b": 5,
+  "t": "Databases · RDS & Aurora",
+  "k": [
+   "Course: Multi-AZ, read replicas, Aurora",
+   "Lab: RDS Multi-AZ, force a failover and time it",
+   "15 questions · Block 5"
+  ]
+ },
+ {
+  "d": "2026-10-23",
+  "b": 5,
+  "t": "Databases · DynamoDB",
+  "k": [
+   "Course: capacity modes, GSI/LSI, DAX, global tables, Streams",
+   "Glossary self-test · Block 5",
+   "15 questions · Block 5 (30% mixed)"
+  ]
+ },
+ {
+  "d": "2026-10-24",
+  "b": 5,
+  "t": "Databases · Caching & purpose-built",
+  "k": [
+   "Course: ElastiCache, Redshift, Neptune, DMS",
+   "Pairs table: which database for which workload",
+   "Missed questions · Block 5"
+  ]
+ },
+ {
+  "d": "2026-10-25",
+  "b": 6,
+  "t": "Decoupling · SQS & SNS",
+  "k": [
+   "Course: SQS standard vs FIFO, visibility, DLQ, SNS fan-out",
+   "Lab: SNS → 2 SQS → Lambda with DLQ",
+   "Sunday mini-mock: Mini exam, all blocks"
+  ],
+  "m": 1
+ },
+ {
+  "d": "2026-10-26",
+  "b": 6,
+  "t": "Decoupling · Streams & orchestration",
+  "k": [
+   "Course: EventBridge, Kinesis, Step Functions, API Gateway",
+   "Pairs table: SQS vs SNS vs EventBridge vs Kinesis",
+   "20 questions · Block 6"
+  ]
+ },
+ {
+  "d": "2026-10-27",
+  "b": 7,
+  "t": "Security · Keys & secrets",
+  "k": [
+   "Course: KMS, CloudHSM, Secrets Manager, ACM",
+   "Glossary self-test · Block 7",
+   "15 questions · Block 7 (30% mixed)"
+  ]
+ },
+ {
+  "d": "2026-10-28",
+  "b": 7,
+  "t": "Security · Detection & monitoring",
+  "k": [
+   "Course: WAF, Shield, GuardDuty, Inspector, Macie, Config, CloudTrail, CloudWatch",
+   "Table: which security service for what",
+   "20 questions · Block 7"
+  ]
+ },
+ {
+  "d": "2026-10-29",
+  "b": 8,
+  "t": "DR & cost",
+  "k": [
+   "Course: DR strategies, RTO/RPO, CloudFront, Global Accelerator",
+   "Cost tools: Budgets, Cost Explorer, Savings Plans",
+   "15 questions · Block 8"
+  ]
+ },
+ {
+  "d": "2026-10-30",
+  "b": 8,
+  "t": "Analytics, ML & migration",
+  "k": [
+   "Course: Athena, Glue, Lake Formation, AI services, MGN/DMS",
+   "Glossary self-test · Block 8",
+   "20 questions · Block 8 (30% mixed)"
+  ]
+ },
+ {
+  "d": "2026-10-31",
+  "t": "Mock exam 1",
+  "k": [
+   "Full exam: 65 questions, 130 min, no interruptions",
+   "Review every missed question",
+   "Note weak domains"
+  ],
+  "m": 2
+ },
+ {
+  "d": "2026-11-01",
+  "t": "Weak spots",
+  "k": [
+   "Study mode: Missed filter, weakest blocks",
+   "Re-read the pairs tables",
+   "Glossary self-test on weakest blocks"
+  ]
+ },
+ {
+  "d": "2026-11-02",
+  "t": "Mock exam 2",
+  "k": [
+   "Full exam: 65 questions, timed",
+   "Review missed + flagged",
+   "Go/no-go check: consistently above 80%?"
+  ],
+  "m": 2
+ },
+ {
+  "d": "2026-11-03",
+  "t": "Mock exam 3",
+  "k": [
+   "Full exam: 65 questions, timed",
+   "Review missed questions",
+   "Last day to reschedule without fees is 24 h before"
+  ],
+  "m": 2
+ },
+ {
+  "d": "2026-11-04",
+  "t": "Light review",
+  "k": [
+   "Missed-question log and pairs tables only",
+   "No new material, no full mock",
+   "Check exam logistics (ID, room or test center)"
+  ]
+ },
+ {
+  "d": "2026-11-05",
+  "t": "Exam day",
+  "k": [
+   "Read each question for the deciding constraint",
+   "Flag and move on; review flags at the end",
+   "130 minutes · 720 to pass"
+  ],
+  "m": 3
+ }
+]
