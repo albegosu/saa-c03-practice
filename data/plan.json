@@ -1,283 +1,204 @@
 [
  {
-  "d": "2026-10-09",
+  "d": "2026-11-25",
   "b": 1,
-  "t": "Identity · IAM basics",
+  "t": "Identity & accounts",
   "k": [
-   "Course: IAM, policies, roles",
-   "Lab: role scoped to one S3 prefix",
-   "15 questions · Block 1"
+   "Recall (5 min): write what you remember from yesterday, then check",
+   "Notes (25 min): block 1 · Identity & accounts — 7 notes in Learn",
+   "Questions (25 min): 15 from block 1",
+   "Log (5 min): note the rule behind each miss"
   ]
  },
  {
-  "d": "2026-10-10",
-  "b": 1,
-  "t": "Baseline + Organizations",
-  "k": [
-   "Cold mock (no prep): Mini exam, all blocks",
-   "Course: Organizations, SCPs, Identity Center",
-   "Lab: bucket policy vs IAM policy conflict"
-  ]
- },
- {
-  "d": "2026-10-11",
-  "b": 1,
-  "t": "Identity wrap-up",
-  "k": [
-   "Blank-page recall: policy evaluation logic",
-   "20 questions · Block 1",
-   "Sunday mini-mock: Mini exam, all blocks"
-  ],
-  "m": 1
- },
- {
-  "d": "2026-10-12",
+  "d": "2026-11-26",
   "b": 2,
-  "t": "Networking · VPC core",
+  "t": "Networking",
   "k": [
-   "Course: VPC, subnets, route tables, IGW, NAT",
-   "Lab: VPC in 2 AZs, public + private, NAT",
-   "15 questions · Block 2"
+   "Recall (5 min): write what you remember from yesterday, then check",
+   "Notes (25 min): block 2 · Networking — 8 notes in Learn",
+   "Questions (25 min): 15 from block 2",
+   "Log (5 min): note the rule behind each miss"
   ]
  },
  {
-  "d": "2026-10-13",
-  "b": 2,
-  "t": "Networking · Security layers",
-  "k": [
-   "Course: SG vs NACL, endpoints (gateway vs interface)",
-   "Lab: S3 gateway endpoint + endpoint policy",
-   "15 questions · Block 2"
-  ]
- },
- {
-  "d": "2026-10-14",
-  "b": 2,
-  "t": "Networking · Hybrid",
-  "k": [
-   "Course: peering, TGW, VPN, Direct Connect",
-   "Pairs table: peering vs TGW vs PrivateLink",
-   "15 questions · Block 2 + 5 from Block 1"
-  ]
- },
- {
-  "d": "2026-10-15",
-  "b": 2,
-  "t": "Networking · Route 53",
-  "k": [
-   "Course: routing policies, Resolver endpoints",
-   "Rebuild the VPC lab from memory, no notes",
-   "Missed questions · Block 2"
-  ]
- },
- {
-  "d": "2026-10-16",
+  "d": "2026-11-27",
   "b": 3,
-  "t": "Compute · EC2 & pricing",
+  "t": "Compute & scaling",
   "k": [
-   "Course: instance types, purchasing, placement groups",
-   "Glossary self-test · Block 3",
-   "15 questions · Block 3 (30% mixed)"
+   "Recall (5 min): write what you remember from yesterday, then check",
+   "Notes (25 min): block 3 · Compute & scaling — 6 notes in Learn",
+   "Questions (25 min): 15 from block 3 + 5 from earlier blocks",
+   "Log (5 min): note the rule behind each miss"
   ]
  },
  {
-  "d": "2026-10-17",
-  "b": 3,
-  "t": "Compute · Scaling & ELB",
+  "d": "2026-11-29",
+  "m": 2,
+  "t": "Diagnostic full mock",
   "k": [
-   "Course: ASG policies, ALB vs NLB",
-   "Lab: ALB + ASG target tracking, kill an instance",
-   "15 questions · Block 3"
+   "Full exam: 65 questions, 130 min, no notes (here or Tutorials Dojo)",
+   "Write down your score per domain: it decides the domain review days"
   ]
  },
  {
-  "d": "2026-10-18",
-  "b": 3,
-  "t": "Compute · Serverless & containers",
-  "k": [
-   "Course: Lambda, ECS/Fargate, EKS",
-   "20 questions · Block 3",
-   "Sunday mini-mock: Mini exam, all blocks"
-  ],
-  "m": 1
- },
- {
-  "d": "2026-10-19",
+  "d": "2026-11-30",
   "b": 4,
-  "t": "Storage · S3",
+  "t": "Storage",
   "k": [
-   "Course: classes, lifecycle, versioning, replication",
-   "Lab: lifecycle rule + presigned URL",
-   "15 questions · Block 4"
+   "Recall (5 min): write what you remember from yesterday, then check",
+   "Notes (25 min): block 4 · Storage — 7 notes in Learn",
+   "Questions (25 min): 15 from block 4 + 5 from earlier blocks",
+   "Log (5 min): note the rule behind each miss"
   ]
  },
  {
-  "d": "2026-10-20",
-  "b": 4,
-  "t": "Storage · S3 security & EBS",
-  "k": [
-   "Course: encryption, Object Lock, OAC, EBS types",
-   "Pairs table: S3 storage classes",
-   "15 questions · Block 4 (30% mixed)"
-  ]
- },
- {
-  "d": "2026-10-21",
-  "b": 4,
-  "t": "Storage · Files & hybrid",
-  "k": [
-   "Course: EFS, FSx family, Storage Gateway, DataSync, Snow",
-   "Lab: EFS mounted on two instances",
-   "Missed questions · Block 4"
-  ]
- },
- {
-  "d": "2026-10-22",
+  "d": "2026-12-01",
   "b": 5,
-  "t": "Databases · RDS & Aurora",
+  "t": "Databases",
   "k": [
-   "Course: Multi-AZ, read replicas, Aurora",
-   "Lab: RDS Multi-AZ, force a failover and time it",
-   "15 questions · Block 5"
+   "Recall (5 min): write what you remember from yesterday, then check",
+   "Notes (25 min): block 5 · Databases — 5 notes in Learn",
+   "Questions (25 min): 15 from block 5 + 5 from earlier blocks",
+   "Log (5 min): note the rule behind each miss"
   ]
  },
  {
-  "d": "2026-10-23",
-  "b": 5,
-  "t": "Databases · DynamoDB",
-  "k": [
-   "Course: capacity modes, GSI/LSI, DAX, global tables, Streams",
-   "Glossary self-test · Block 5",
-   "15 questions · Block 5 (30% mixed)"
-  ]
- },
- {
-  "d": "2026-10-24",
-  "b": 5,
-  "t": "Databases · Caching & purpose-built",
-  "k": [
-   "Course: ElastiCache, Redshift, Neptune, DMS",
-   "Pairs table: which database for which workload",
-   "Missed questions · Block 5"
-  ]
- },
- {
-  "d": "2026-10-25",
+  "d": "2026-12-02",
   "b": 6,
-  "t": "Decoupling · SQS & SNS",
+  "t": "Decoupling & events",
   "k": [
-   "Course: SQS standard vs FIFO, visibility, DLQ, SNS fan-out",
-   "Lab: SNS → 2 SQS → Lambda with DLQ",
-   "Sunday mini-mock: Mini exam, all blocks"
-  ],
-  "m": 1
- },
- {
-  "d": "2026-10-26",
-  "b": 6,
-  "t": "Decoupling · Streams & orchestration",
-  "k": [
-   "Course: EventBridge, Kinesis, Step Functions, API Gateway",
-   "Pairs table: SQS vs SNS vs EventBridge vs Kinesis",
-   "20 questions · Block 6"
+   "Recall (5 min): write what you remember from yesterday, then check",
+   "Notes (25 min): block 6 · Decoupling & events — 4 notes in Learn",
+   "Questions (25 min): 15 from block 6 + 5 from earlier blocks",
+   "Log (5 min): note the rule behind each miss"
   ]
  },
  {
-  "d": "2026-10-27",
+  "d": "2026-12-03",
   "b": 7,
-  "t": "Security · Keys & secrets",
+  "t": "Data security & observability",
   "k": [
-   "Course: KMS, CloudHSM, Secrets Manager, ACM",
-   "Glossary self-test · Block 7",
-   "15 questions · Block 7 (30% mixed)"
+   "Recall (5 min): write what you remember from yesterday, then check",
+   "Notes (25 min): block 7 · Data security & observability — 5 notes in Learn",
+   "Questions (25 min): 15 from block 7 + 5 from earlier blocks",
+   "Log (5 min): note the rule behind each miss"
   ]
  },
  {
-  "d": "2026-10-28",
-  "b": 7,
-  "t": "Security · Detection & monitoring",
-  "k": [
-   "Course: WAF, Shield, GuardDuty, Inspector, Macie, Config, CloudTrail, CloudWatch",
-   "Table: which security service for what",
-   "20 questions · Block 7"
-  ]
- },
- {
-  "d": "2026-10-29",
+  "d": "2026-12-04",
   "b": 8,
-  "t": "DR & cost",
+  "t": "DR, cost & the rest",
   "k": [
-   "Course: DR strategies, RTO/RPO, CloudFront, Global Accelerator",
-   "Cost tools: Budgets, Cost Explorer, Savings Plans",
-   "15 questions · Block 8"
+   "Recall (5 min): write what you remember from yesterday, then check",
+   "Notes (25 min): block 8 · DR, cost & the rest — 6 notes in Learn",
+   "Questions (25 min): 15 from block 8 + 5 from earlier blocks",
+   "Log (5 min): note the rule behind each miss"
   ]
  },
  {
-  "d": "2026-10-30",
-  "b": 8,
-  "t": "Analytics, ML & migration",
+  "d": "2026-12-07",
+  "dm": 1,
+  "t": "Domain review · Secure architectures (30 %)",
   "k": [
-   "Course: Athena, Glue, Lake Formation, AI services, MGN/DMS",
-   "Glossary self-test · Block 8",
-   "20 questions · Block 8 (30% mixed)"
+   "Questions (40 min): 20 from domain 1, focus on what you got wrong",
+   "Re-read the notes linked from every miss",
+   "Log (10 min): the 3 rules you keep forgetting",
+   "Evening: study missed questions"
   ]
  },
  {
-  "d": "2026-10-31",
-  "t": "Mock exam 1",
+  "d": "2026-12-08",
+  "m": 2,
+  "t": "Full mock",
   "k": [
-   "Full exam: 65 questions, 130 min, no interruptions",
-   "Review every missed question",
-   "Note weak domains"
+   "Full exam: 65 questions, 130 min, timed",
+   "Review every miss and its note"
+  ]
+ },
+ {
+  "d": "2026-12-09",
+  "dm": 2,
+  "t": "Domain review · Resilient architectures (26 %)",
+  "k": [
+   "Questions (40 min): 20 from domain 2, focus on what you got wrong",
+   "Re-read the notes linked from every miss",
+   "Log (10 min): the 3 rules you keep forgetting",
+   "Evening: full mock, 130 min"
   ],
   "m": 2
  },
  {
-  "d": "2026-11-01",
-  "t": "Weak spots",
+  "d": "2026-12-10",
+  "dm": 3,
+  "t": "Domain review · High-performing architectures (24 %)",
   "k": [
-   "Study mode: Missed filter, weakest blocks",
-   "Re-read the pairs tables",
-   "Glossary self-test on weakest blocks"
+   "Questions (40 min): 20 from domain 3, focus on what you got wrong",
+   "Re-read the notes linked from every miss",
+   "Log (10 min): the 3 rules you keep forgetting",
+   "Evening checkpoint: are your full mocks ≥ 75 %? If not, move the exam a week"
   ]
  },
  {
-  "d": "2026-11-02",
-  "t": "Mock exam 2",
+  "d": "2026-12-11",
+  "dm": 4,
+  "t": "Domain review · Cost-optimized architectures (20 %)",
   "k": [
-   "Full exam: 65 questions, timed",
-   "Review missed + flagged",
-   "Go/no-go check: consistently above 80%?"
+   "Questions (40 min): 20 from domain 4, focus on what you got wrong",
+   "Re-read the notes linked from every miss",
+   "Log (10 min): the 3 rules you keep forgetting",
+   "Evening: full mock, 130 min"
   ],
   "m": 2
  },
  {
-  "d": "2026-11-03",
-  "t": "Mock exam 3",
+  "d": "2026-12-12",
+  "t": "Missed questions",
   "k": [
-   "Full exam: 65 questions, timed",
-   "Review missed questions",
-   "Last day to reschedule without fees is 24 h before"
-  ],
-  "m": 2
+   "Study missed questions until none are left",
+   "Skim the notes of your weakest domain"
+  ]
  },
  {
-  "d": "2026-11-04",
+  "d": "2026-12-13",
+  "m": 2,
+  "t": "Last full mock",
+  "k": [
+   "Full exam: 65 questions, 130 min",
+   "Only review misses; no new material from here"
+  ]
+ },
+ {
+  "d": "2026-12-14",
   "t": "Light review",
   "k": [
-   "Missed-question log and pairs tables only",
-   "No new material, no full mock",
-   "Check exam logistics (ID, room or test center)"
+   "Missed and flagged questions, 30 min",
+   "Skim the exam tips of all notes"
   ]
  },
  {
-  "d": "2026-11-05",
+  "d": "2026-12-15",
+  "t": "Light review",
+  "k": [
+   "Missed and flagged questions, 30 min",
+   "Skim the glossary"
+  ]
+ },
+ {
+  "d": "2026-12-16",
+  "t": "Light review",
+  "k": [
+   "20 mixed questions, no timer",
+   "Sleep early"
+  ]
+ },
+ {
+  "d": "2026-12-17",
+  "m": 3,
   "t": "Exam day",
   "k": [
-   "Read each question for the deciding constraint",
-   "Flag and move on; review flags at the end",
-   "130 minutes · 720 to pass"
-  ],
-  "m": 3
+   "Placeholder: move this entry to the date you booked",
+   "ID ready, 30 min early, flag and move on"
+  ]
  }
 ]

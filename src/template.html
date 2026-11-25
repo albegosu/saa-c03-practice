@@ -551,10 +551,13 @@ const fmtDay=iso=>new Date(iso+'T12:00:00').toLocaleDateString('en-GB',{weekday:
 const KIND={1:'Mini-mock',2:'Full mock',3:'Exam'};
 function planAction(p){
   if(p.m===3)return '';
-  if(p.m===2)return `<button class="btn sm primary" data-act="plan-exam" data-k="full">Start full exam</button>`;
-  if(p.m===1)return `<button class="btn sm" data-act="plan-exam" data-k="mini">Start mini exam</button>${p.b?`<button class="btn sm" data-act="plan-study" data-b="${p.b}">Practice block ${p.b}</button>`:''}`;
-  if(p.b)return `<button class="btn sm primary" data-act="plan-study" data-b="${p.b}">Practice block ${p.b}</button>`;
-  return `<button class="btn sm" data-act="plan-missed">Study missed questions</button>`;
+  const out=[];
+  if(p.b)out.push(`<button class="btn sm primary" data-act="plan-study" data-b="${p.b}">Practice block ${p.b}</button>`,`<button class="btn sm" data-act="plan-notes" data-b="${p.b}">Read block ${p.b} notes</button>`);
+  if(p.dm)out.push(`<button class="btn sm primary" data-act="plan-domain" data-d="${p.dm}">Practice ${DOM[p.dm].s}</button>`);
+  if(p.m===2)out.push(`<button class="btn sm ${out.length?'':'primary'}" data-act="plan-exam" data-k="full">Start full exam</button>`);
+  if(p.m===1)out.push(`<button class="btn sm" data-act="plan-exam" data-k="mini">Start mini exam</button>`);
+  if(!out.length)out.push(`<button class="btn sm" data-act="plan-missed">Study missed questions</button>`);
+  return out.join('');
 }
 function planView(){
   const done=store.get('plan',{}),today=todayISO(),exam=PLAN[PLAN.length-1].d;
@@ -568,8 +571,8 @@ function planView(){
       <div class="pbody"><div class="phead"><span class="pdate mono">${fmtDay(p.d)}</span>${p.m?`<span class="pill ${p.m===3?'bad':'warn'}">${KIND[p.m]}</span>`:''}${p.b?`<span class="pill">Block ${p.b}</span>`:''}${st==='today'?'<span class="pill ok">Today</span>':''}</div>
       <b class="ptitle">${esc(p.t)}</b><ul class="ptasks">${p.k.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>${st!=='past'||!ck?`<div class="row pact">${planAction(p)}</div>`:''}</div></li>`};
   return topbar()+`<main class="wrap">
-  <div class="intro"><span class="eyebrow">Study plan · 9 Oct → 5 Nov</span><h1>${days>0?`${days} day${days===1?'':'s'} to the exam`:days===0?'Exam day':'Exam done'}</h1>
-  <p>About 75–90 minutes a day: 10 min blank-page recall of yesterday, 25–30 min course, 30–40 min lab or questions, 10 min logging what you missed. From block 3, mix in ~30% questions from earlier blocks.</p></div>
+  <div class="intro"><span class="eyebrow">Study plan · ${fmtDay(PLAN[0].d)} → ${fmtDay(exam)}</span><h1>${days>0?`${days} day${days===1?'':'s'} to the exam`:days===0?'Exam day':'Exam done'}</h1>
+  <p>One hour a day. The theory is the concept notes in Learn: one block per day, then 15 questions from that block. After the eight blocks, one domain per day, weighted like the exam, plus timed full mocks.</p></div>
   <div class="pstats"><div class="meter ok"><i style="width:${100*doneN/PLAN.length}%"></i></div><span class="mono muted">${doneN}/${PLAN.length} days done</span></div>
   ${cur?`<section class="panel ptoday"><header><h2>${cur.d===today?'Today':'Next up'}</h2><span class="eyebrow">${fmtDay(cur.d)}</span></header><ul class="plist">${row(cur)}</ul></section>`:''}
   ${weeks.map((w,i)=>`<section class="pweek"><h3><span class="mono muted">W${i+1}</span> Week of ${w.mon.toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</h3><ul class="plist panel">${w.items.map(row).join('')}</ul></section>`).join('')}
@@ -814,6 +817,8 @@ const acts={
   nav(d){if(S&&S.mode==='exam')return acts.home();S=null;go(d.v)},
   'plan-done'(d){const p=store.get('plan',{});p[d.d]?delete p[d.d]:p[d.d]=1;store.set('plan',p);const y=scrollY;render();scrollTo(0,y)},
   'plan-study'(d){const ids=pickIds('b'+d.b,'smart','15');if(ids.length)startStudy(ids,true)},
+  'plan-notes'(d){lb=String(d.b);lq='';lfocus=null;go('learn')},
+  'plan-domain'(d){const ids=pickIds('d'+d.d,'smart','20');if(ids.length)startStudy(ids,true)},
   'plan-missed'(){const ids=pickIds('mix','bad','20');if(ids.length)startStudy(ids,true);else go('home')},
   'plan-exam'(d){cfg.blocks=AVAIL.slice();cfg.exam=d.k;store.set('cfg',cfg);acts.exam()},
   gblock(d){gb=d.v;render()},
